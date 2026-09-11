@@ -1,0 +1,68 @@
+name: CI
+
+on:
+    push:
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    quality:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.5'
+                  coverage: none
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - name: Install PHP dependencies
+              run: composer install --prefer-dist --no-interaction --no-progress
+
+            - name: Install frontend dependencies
+              run: npm ci
+
+            - name: Build styles
+              run: npm run build
+
+            - name: Run quality checks
+              run: composer ci:check
+
+            - name: Ensure generated CSS is committed
+              run: git diff --exit-code -- dist/sirius.css
+
+    compatibility:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - laravel: '^12.61.1'
+                      testbench: '^10.11'
+                    - laravel: '^13.12.0'
+                      testbench: '^11.0'
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  coverage: none
+
+            - name: Select Laravel version
+              run: composer require --dev "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update --no-interaction
+
+            - name: Install dependencies
+              run: composer update --prefer-dist --no-interaction --no-progress
+
+            - name: Run tests
+              run: composer test

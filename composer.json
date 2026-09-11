@@ -1,0 +1,109 @@
+{
+    "name": "sirius/ui",
+    "description": "Reusable Laravel Blade and Livewire UI components styled with Tailwind CSS.",
+    "keywords": [
+        "blade",
+        "components",
+        "laravel",
+        "livewire",
+        "tailwindcss"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sirius: Code",
+            "role": "Author"
+        },
+        {
+            "name": "Fathul Husnan",
+            "role": "Contributor"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^12.61.1 || ^13.12.0",
+        "illuminate/view": "^12.61.1 || ^13.12.0",
+        "livewire/livewire": "^4.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.8",
+        "laravel/pint": "^1.24",
+        "orchestra/testbench": "^10.11 || ^11.0",
+        "peckphp/peck": "^0.3.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "rector/rector": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sirius\\Ui\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sirius\\Ui\\SiriusUiServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
+        "audit": {
+            "block-insecure": true
+        },
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "8.3.0"
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "lint": [
+            "pint --parallel"
+        ],
+        "lint:check": [
+            "pint --parallel --test"
+        ],
+        "ci:check": [
+            "Composer\\Config::disableProcessTimeout",
+            "@test"
+        ],
+        "types:check": [
+            "phpstan analyse --memory-limit=2G"
+        ],
+        "typos:check": [
+            "peck"
+        ],
+        "typos": [
+            "peck --ignore-all"
+        ],
+        "refactor:check": [
+            "rector --dry-run"
+        ],
+        "refactor": [
+            "rector"
+        ],
+        "test": [
+            "@php test.php"
+        ],
+        "check": [
+            "@test"
+        ],
+        "post-autoload-dump": [
+            "@composer run prepare"
+        ],
+        "prepare": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,14 @@
+/.idea/
+/.phpstan.cache/
+/.phpunit.cache/
+/.phpunit.result.cache
+/.vscode/
+/composer.lock
+/node_modules/
+/testbench-core/
+/vendor/
+phpunit.xml
+phpstan.neon
+.env
+.env.*
+!.env.example
