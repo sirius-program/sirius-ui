@@ -29,6 +29,8 @@ final class Field extends Component
         public string $size = 'md',
         public bool $group = false,
         public string $wrapperClass = '',
+        public bool $showRequiredIndicator = true,
+        public bool $showErrors = true,
     ) {
         if ($id === '' || preg_match('/[\s"\'<>`=]/u', $id)) {
             throw new InvalidArgumentException('A field needs a non-empty, unique ID without whitespace or markup characters.');
@@ -67,6 +69,24 @@ final class Field extends Component
         return array_values(array_filter($errors->getBag($this->errorBag)->get($key), is_string(...)));
     }
 
+    /** @return array{required: bool, key: ?string, bag: string, errors: ?ViewErrorBag, description: ?string}|null */
+    public function choiceGroup(): ?array
+    {
+        if (!$this->group) {
+            return null;
+        }
+
+        $errors = $this->errors ?? View::shared('errors');
+
+        return [
+            'required'    => $this->required,
+            'key'         => $this->resolvedErrorKey(),
+            'bag'         => $this->errorBag,
+            'errors'      => $errors instanceof ViewErrorBag ? $errors : null,
+            'description' => $this->describedBy(),
+        ];
+    }
+
     public function describedBy(): ?string
     {
         $existing = $this->attributes->get('aria-describedby');
@@ -77,7 +97,7 @@ final class Field extends Component
             $ids[] = $this->id . '-helper';
         }
 
-        if ($this->messages() !== []) {
+        if ($this->showErrors && $this->messages() !== []) {
             $ids[] = $this->id . '-error';
         }
 

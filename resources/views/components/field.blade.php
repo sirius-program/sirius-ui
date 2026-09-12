@@ -9,7 +9,7 @@
         aria-invalid="{{ $messages !== [] ? 'true' : 'false' }}"
         @class(['sir-field', 'sir-field--group', 'sir-field--'.$size, $wrapperClass])>
         @if ($label !== null && $label !== '')
-            <x-sirius-internal-label as="legend" :required="$required">{{ $label }}</x-sirius-internal-label>
+            <x-sirius-internal-label as="legend" :required="$required && $showRequiredIndicator">{{ $label }}</x-sirius-internal-label>
         @endif
         <div class="sir-field__control">{{ $slot }}</div>
         @include('sirius::components.partials.field-messages')
@@ -21,7 +21,7 @@
             <div class="sir-field__control">{{ $slot }}</div>
         @endif
         @if ($label !== null && $label !== '')
-            <x-sirius-internal-label :for="$id" :required="$required">{{ $label }}</x-sirius-internal-label>
+            <x-sirius-internal-label :for="$id" :required="$required && $showRequiredIndicator">{{ $label }}</x-sirius-internal-label>
         @endif
         @if ($layout === 'stacked')
             <div class="sir-field__control">{{ $slot }}</div>

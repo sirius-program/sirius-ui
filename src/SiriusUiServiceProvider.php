@@ -31,6 +31,7 @@ final class SiriusUiServiceProvider extends ServiceProvider
         );
 
         Blade::component(Field::class, $bladeNamespace . '::field');
+        Blade::component(Field::class, 'sirius-internal-field');
         Blade::component('sirius::components.label', 'sirius-internal-label');
 
         Livewire::addNamespace(
@@ -54,6 +55,7 @@ final class SiriusUiServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/../dist/sirius.css' => public_path('vendor/sirius-ui/sirius.css'),
+            __DIR__ . '/../dist/sirius.js'  => public_path('vendor/sirius-ui/sirius.js'),
         ], 'sirius-ui-assets');
     }
 
