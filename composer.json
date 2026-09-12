@@ -21,6 +21,7 @@
     ],
     "require": {
         "php": "^8.3",
+        "blade-ui-kit/blade-heroicons": "2.7.0",
         "illuminate/support": "^12.61.1 || ^13.12.0",
         "illuminate/view": "^12.61.1 || ^13.12.0",
         "livewire/livewire": "^4.0"
