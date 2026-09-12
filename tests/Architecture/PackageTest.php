@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Symfony\Component\Finder\Finder;
 
@@ -16,6 +17,11 @@ arch('production PHP uses strict types and no debugging or environment helpers',
 
 arch('Livewire classes inherit the framework component directly or indirectly', function (): void {
     expect('Sirius\Ui\Livewire')->classes()->toExtend(Component::class);
+});
+
+arch('class-backed Blade adapters extend the framework component without querying models', function (): void {
+    expect('Sirius\Ui\View\Components')->classes()->toExtend(Illuminate\View\Component::class);
+    expect('Sirius\Ui\View\Components')->not->toUse(['Illuminate\Database', DB::class]);
 });
 
 it('keeps source declarations in their PSR-4 location', function (string $class): void {

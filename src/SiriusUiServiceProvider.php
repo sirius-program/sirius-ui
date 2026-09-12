@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
 use Livewire\Livewire;
+use Sirius\Ui\View\Components\Field;
 
 final class SiriusUiServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,9 @@ final class SiriusUiServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views/components',
             $bladeNamespace,
         );
+
+        Blade::component(Field::class, $bladeNamespace . '::field');
+        Blade::component('sirius::components.label', 'sirius-internal-label');
 
         Livewire::addNamespace(
             namespace: $livewireNamespace,

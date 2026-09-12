@@ -9,6 +9,12 @@
     --sir-color-text: oklch(0.24 0.02 260);
     --sir-focus-ring: oklch(0.7 0.16 250);
     --sir-radius: 0.625rem;
+    --sir-color-muted: var(--color-slate-600);
+    --sir-color-border: var(--color-slate-300);
+    --sir-color-danger: var(--color-red-700);
+    --sir-field-gap: 0.375rem;
+    --sir-control-padding-x: 0.75rem;
+    --sir-control-padding-y: 0.5rem;
 }
 
 .dark {
@@ -18,4 +24,46 @@
     --sir-color-surface: oklch(0.2 0.02 260);
     --sir-color-text: oklch(0.96 0.01 260);
     --sir-focus-ring: oklch(0.78 0.13 245);
+    --sir-color-muted: var(--color-slate-300);
+    --sir-color-border: var(--color-slate-600);
+    --sir-color-danger: var(--color-red-400);
+}
+
+@layer components {
+    .sir-field {
+        @apply min-w-0;
+        display: grid;
+        gap: var(--sir-field-gap);
+        color: var(--sir-color-text);
+        font-size: 1rem;
+    }
+    .sir-field--sm { font-size: 0.875rem; --sir-control-padding-y: 0.375rem; }
+    .sir-field--lg { font-size: 1.125rem; --sir-control-padding-y: 0.625rem; }
+    .sir-field--inline { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+    .sir-field--inline > .sir-helper, .sir-field--inline > .sir-error { grid-column: 2; }
+    .sir-field--group { border: 0; padding: 0; margin: 0; }
+    .sir-field--group > legend { margin-bottom: var(--sir-field-gap); }
+    .sir-field__control { min-width: 0; }
+    .sir-label { font-size: inherit; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; }
+    .sir-required { color: var(--sir-color-danger); }
+    .sir-helper, .sir-error { margin: 0; padding: 0; font-size: 0.875rem; line-height: 1.5; overflow-wrap: anywhere; }
+    .sir-helper { color: var(--sir-color-muted); }
+    .sir-error { color: var(--sir-color-danger); list-style: none; }
+    .sir-control {
+        box-sizing: border-box;
+        display: block;
+        width: 100%;
+        min-width: 0;
+        border: 1px solid var(--sir-color-border);
+        border-radius: var(--sir-radius);
+        padding: var(--sir-control-padding-y) var(--sir-control-padding-x);
+        background: var(--sir-color-surface);
+        color: var(--sir-color-text);
+        font: inherit;
+    }
+    .sir-control:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+    .sir-control[aria-invalid="true"] { border-color: var(--sir-color-danger); }
+    .sir-control:disabled { cursor: not-allowed; opacity: 0.55; }
+    .sir-control[readonly] { background: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 15%); }
+    .sir-field--inline .sir-control { width: auto; margin-top: 0.25rem; padding: 0; }
 }
