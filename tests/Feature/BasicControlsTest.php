@@ -84,12 +84,12 @@ it('keeps separate groups and standalone choice validation independent', functio
     expect($html)->not->toContain('outer-option-error', 'inner-option-error');
 });
 
-it('rejects unsupported input types and premature richtext instead of silently changing semantics', function (string $template): void {
+it('rejects unsupported input types and premature editor instead of silently changing semantics', function (string $template): void {
     expect(fn () => Blade::render($template))->toThrow(ViewException::class);
 })->with([
     '<x-sirius::input id="bad" type="file" />',
     '<x-sirius::textarea id="bad" resize="invalid" />',
-    '<x-sirius::textarea id="bad" richtext />',
+    '<x-sirius::textarea id="bad" editor />',
     '<x-sirius::switch id="bad" indeterminate />',
 ]);
 
