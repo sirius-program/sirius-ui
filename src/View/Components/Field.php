@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Sirius\Ui\View\Components;
 
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\Component;
 use Illuminate\View\ComponentAttributeBag;
@@ -14,8 +15,10 @@ use LogicException;
 
 final class Field extends Component
 {
+    public string $id;
+
     public function __construct(
-        public string $id,
+        ?string $id = null,
         public ?string $label = null,
         public ?string $name = null,
         public ?string $helper = null,
@@ -32,7 +35,9 @@ final class Field extends Component
         public bool $showRequiredIndicator = true,
         public bool $showErrors = true,
     ) {
-        if ($id === '' || preg_match('/[\s"\'<>`=]/u', $id)) {
+        $this->id = $id ?? Str::random(5);
+
+        if ($this->id === '' || preg_match('/[\s"\'<>`=]/u', $this->id)) {
             throw new InvalidArgumentException('A field needs a non-empty, unique ID without whitespace or markup characters.');
         }
 

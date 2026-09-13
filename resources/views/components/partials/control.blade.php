@@ -1,12 +1,12 @@
 @aware(['choiceGroup' => null])
 @props([
-    'id', 'label' => null, 'name' => null, 'helper' => null,
+    'id' => null, 'label' => null, 'name' => null, 'helper' => null,
     'required' => false, 'disabled' => false, 'readonly' => false,
     'errorKey' => null, 'errorBag' => 'default', 'errors' => null,
     'size' => 'md', 'wrapperClass' => '', 'type' => 'text',
     'prefix' => null, 'suffix' => null, 'value' => null,
     'checked' => false, 'indeterminate' => false, 'resize' => 'vertical',
-    'showLabel' => 'Show password', 'hideLabel' => 'Hide password',
+    'showLabel' => 'Show', 'hideLabel' => 'Hide',
     'richtext' => false, 'controlSize' => null,
 ])
 @php
@@ -60,9 +60,9 @@
                 @if ($type === 'password') data-sir-password @endif>
             @if ($suffix !== null && (string) $suffix !== '')<span class="sir-adornment">{{ $suffix }}</span>@endif
             @if ($type === 'password')
-                <button type="button" class="sir-password-toggle" data-sir-password-toggle="{{ $id }}"
+                <button type="button" class="sir-password-toggle" data-sir-password-toggle="{{ $component->id }}"
                     data-show-label="{{ $showLabel }}" data-hide-label="{{ $hideLabel }}"
-                    aria-label="{{ $showLabel }}" aria-controls="{{ $id }}" aria-pressed="false" @disabled($disabled) hidden>
+                    title="{{ $showLabel }}" aria-label="{{ $showLabel }}" aria-controls="{{ $component->id }}" aria-pressed="false" @disabled($disabled) hidden>
                     @svg('heroicon-o-eye', 'sir-icon sir-eye', ['aria-hidden' => 'true'])
                     @svg('heroicon-o-eye-slash', 'sir-icon sir-eye-slash', ['aria-hidden' => 'true'])
                 </button>

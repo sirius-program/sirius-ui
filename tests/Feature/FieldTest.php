@@ -6,6 +6,23 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Sirius\Ui\SiriusUiServiceProvider;
+use Sirius\Ui\View\Components\Field;
+
+it('defaults field and group IDs while preserving explicit IDs and rejecting invalid IDs', function (): void {
+    $field = new Field;
+    $other = new Field(group: true);
+    expect($field->id)->toMatch('/^[a-zA-Z0-9]{5}$/');
+    expect($field->id)->not->toBe($other->id);
+    expect((new Field(id: 'explicit-id'))->id)->toBe('explicit-id');
+    expect(fn (): Field => new Field(id: ''))->toThrow(InvalidArgumentException::class);
+    expect(fn (): Field => new Field(id: 'invalid id'))->toThrow(InvalidArgumentException::class);
+
+    $html = Blade::render('<x-sirius::field group label="Options" helper="Choose"><x-sirius::checkbox label="A" /><x-sirius::checkbox label="B" /></x-sirius::field>');
+    preg_match('/<fieldset id="([a-zA-Z0-9]{5})"/', $html, $matches);
+    expect($matches)->toHaveCount(2);
+    $id = $matches[1] ?? '';
+    expect($html)->toContain('id="' . $id . '-helper"', 'aria-describedby="' . $id . '-helper"');
+});
 
 it('renders an escaped label with an optional required marker', function (bool $required): void {
     $html = Blade::render('<x-sirius::label for="email" :required="$required">{{ $text }}</x-sirius::label>', [

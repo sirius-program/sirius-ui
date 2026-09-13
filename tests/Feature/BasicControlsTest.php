@@ -8,6 +8,19 @@ use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
 use Sirius\Ui\SiriusUiServiceProvider;
 
+it('generates a five character control ID and connects its label helper errors and password toggle', function (string $kind): void {
+    $errors = (new ViewErrorBag)->put('default', new MessageBag(['sample' => ['Invalid sample']]));
+    $html = Blade::render('<x-sirius::' . $kind . ' name="sample" label="Sample" helper="Help" :errors="$errors" ' . ($kind === 'input' ? 'type="password"' : '') . ' />', ['errors' => $errors]);
+    preg_match('/<(?:input|textarea)[^>]*\sid="([a-zA-Z0-9]{5})"/', $html, $matches);
+
+    expect($matches)->toHaveCount(2);
+    $id = $matches[1] ?? '';
+    expect($html)->toContain('for="' . $id . '"', 'id="' . $id . '-helper"', 'id="' . $id . '-error"', 'aria-describedby="' . $id . '-helper ' . $id . '-error"');
+    if ($kind === 'input') {
+        expect($html)->toContain('data-sir-password-toggle="' . $id . '"', 'aria-controls="' . $id . '"');
+    }
+})->with(['input', 'textarea', 'checkbox', 'radio', 'switch']);
+
 it('composes native input attributes with the shared field and adornments', function (): void {
     $html = Blade::render('<x-sirius::input id="amount" type="number" name="amount" label="Amount" helper="Units" required readonly min="0" max="100" step="0.5" prefix="$" suffix="kg" value="0" wire:model.blur="amount" />');
 
@@ -26,7 +39,7 @@ it('uses named slots for adornments and escapes strings and textarea content', f
 it('renders an accessible non-submit password toggle using Blade Icons', function (): void {
     $html = Blade::render('<x-sirius::input id="secret" type="password" disabled show-label="Reveal secret" hide-label="Hide secret" />');
 
-    expect($html)->toContain('type="password"', 'type="button"', 'aria-controls="secret"', 'aria-label="Reveal secret"', '<svg', 'data-sir-password', 'disabled="disabled"');
+    expect($html)->toContain('type="password"', 'type="button"', 'aria-controls="secret"', 'aria-label="Reveal secret"', 'title="Reveal secret"', '<svg', 'data-sir-password', 'disabled="disabled"');
 });
 
 it('shares errors and native state across all controls', function (string $kind): void {

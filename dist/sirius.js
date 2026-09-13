@@ -13,7 +13,9 @@ if (!window[owner]) {
             if (button.dataset.sirPasswordToggle !== input.id) return;
             button.hidden = false;
             button.setAttribute('aria-pressed', String(visible));
-            button.setAttribute('aria-label', visible ? button.dataset.hideLabel : button.dataset.showLabel);
+            const label = visible ? button.dataset.hideLabel : button.dataset.showLabel;
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
         });
     }
 
