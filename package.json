@@ -3,7 +3,7 @@
     "private": true,
     "description": "Development tooling for Sirius UI styles.",
     "scripts": {
-        "build": "tailwindcss -i ./resources/css/sirius.css -o ./dist/sirius.css --minify && node -e \"require('node:fs').copyFileSync('resources/js/sirius.js', 'dist/sirius.js')\"",
+        "build": "tailwindcss -i ./resources/css/sirius.css -o ./dist/sirius.css --minify && node scripts/build-js.mjs",
         "dev": "tailwindcss -i ./resources/css/sirius.css -o ./dist/sirius.css --watch"
     },
     "devDependencies": {
