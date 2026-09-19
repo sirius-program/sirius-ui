@@ -1,3 +1,4 @@
+@import "../../node_modules/flatpickr/dist/flatpickr.css";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 
@@ -92,10 +93,10 @@
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])):has(> .sir-control[aria-invalid="true"]) { border-color: var(--sir-color-danger); }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])):has(> .sir-control:disabled) { opacity: 0.55; cursor: not-allowed; }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > .sir-control:disabled { opacity: 1; }
-    .sir-password-toggle { flex: none; justify-content: center; border: 0; border-inline-start: 1px solid var(--sir-color-border); border-radius: 0; color: var(--sir-color-text); cursor: pointer; }
-    .sir-password-toggle[hidden] { display: none; }
-    .sir-password-toggle:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
-    .sir-password-toggle:disabled { cursor: not-allowed; opacity: 0.55; }
+    :is(.sir-password-toggle, .sir-date-clear) { flex: none; justify-content: center; border: 0; border-inline-start: 1px solid var(--sir-color-border); border-radius: 0; color: var(--sir-color-text); cursor: pointer; }
+    :is(.sir-password-toggle, .sir-date-clear)[hidden] { display: none; }
+    :is(.sir-password-toggle, .sir-date-clear):focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+    :is(.sir-password-toggle, .sir-date-clear):disabled { cursor: not-allowed; opacity: 0.55; }
     .sir-icon { width: 1.25rem; height: 1.25rem; }
     .sir-eye-slash, .sir-password-toggle[aria-pressed="true"] .sir-eye { display: none; }
     .sir-password-toggle[aria-pressed="true"] .sir-eye-slash { display: block; }
@@ -127,3 +128,27 @@
     .sir-resize-horizontal { resize: horizontal; max-width: 100%; }
     .sir-resize-both { resize: both; max-width: 100%; }
 }
+
+/* Scoped widget overrides use the same tokens as native package fields. */
+.sir-date-calendar.flatpickr-calendar { background: var(--sir-color-surface); color: var(--sir-color-text); border: 1px solid var(--sir-color-border); box-shadow: 0 4px 16px #0002; border-radius: var(--sir-radius); }
+.sir-date-calendar .flatpickr-months .flatpickr-month,
+.sir-date-calendar .flatpickr-weekdays, .sir-date-calendar span.flatpickr-weekday,
+.sir-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months,
+.sir-date-calendar .flatpickr-time input, .sir-date-calendar .flatpickr-time .flatpickr-am-pm { background: var(--sir-color-surface); color: var(--sir-color-text); fill: var(--sir-color-text); }
+.sir-date-calendar .flatpickr-day { color: var(--sir-color-text); }
+.sir-date-calendar .flatpickr-day.flatpickr-disabled,
+.sir-date-calendar .flatpickr-day.prevMonthDay, .sir-date-calendar .flatpickr-day.nextMonthDay { color: var(--sir-color-muted); opacity: .55; }
+.sir-date-calendar .flatpickr-day:hover { background: var(--sir-color-border); border-color: var(--sir-color-border); }
+.sir-date-calendar .flatpickr-day.selected { background: var(--sir-color-primary); border-color: var(--sir-color-primary); color: var(--sir-color-on-primary); }
+.sir-date-calendar .flatpickr-day:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: -2px; }
+.sir-date-calendar .flatpickr-prev-month svg, .sir-date-calendar .flatpickr-next-month svg { fill: var(--sir-color-text); }
+.sir-date-calendar { max-width: calc(100vw - 1rem); }
+@media (prefers-reduced-motion: reduce) { .sir-date-calendar.animate.open { animation: none; } }
+
+.sir-date-calendar .flatpickr-current-month input.cur-year,
+.sir-date-calendar .flatpickr-time .flatpickr-time-separator { color: var(--sir-color-text); }
+.sir-date-calendar .numInputWrapper span.arrowUp::after { border-bottom-color: var(--sir-color-muted); }
+.sir-date-calendar .numInputWrapper span.arrowDown::after { border-top-color: var(--sir-color-muted); }
+.sir-date-calendar.multiMonth { overflow-x: auto; }
+
+.sir-date-calendar.flatpickr-calendar.hasTime .flatpickr-time { border-top-color: var(--sir-color-border); }

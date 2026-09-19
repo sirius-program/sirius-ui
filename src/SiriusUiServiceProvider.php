@@ -54,8 +54,9 @@ final class SiriusUiServiceProvider extends ServiceProvider
         ], 'sirius-ui-translations');
 
         $this->publishes([
-            __DIR__ . '/../dist/sirius.css' => public_path('vendor/sirius-ui/sirius.css'),
-            __DIR__ . '/../dist/sirius.js'  => public_path('vendor/sirius-ui/sirius.js'),
+            __DIR__ . '/../dist/sirius.css'              => public_path('vendor/sirius-ui/sirius.css'),
+            __DIR__ . '/../dist/sirius.js'               => public_path('vendor/sirius-ui/sirius.js'),
+            __DIR__ . '/../dist/third-party-notices.txt' => public_path('vendor/sirius-ui/third-party-notices.txt'),
         ], 'sirius-ui-assets');
     }
 
