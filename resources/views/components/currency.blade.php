@@ -4,10 +4,13 @@
     'errorKey' => null, 'errorBag' => 'default', 'errors' => null,
     'size' => 'md', 'wrapperClass' => '', 'value' => null,
     'prefix' => null, 'suffix' => null, 'controlSize' => null,
-    'thousandsSeparator' => ',', 'decimalSeparator' => '.',
-    'precision' => 2, 'allowNegative' => false,
+    'thousandsSeparator' => null, 'decimalSeparator' => null,
+    'precision' => null, 'allowNegative' => false,
 ])
 @php
+    $thousandsSeparator ??= config('sirius-ui.currency.thousands_separator') ?? ',';
+    $decimalSeparator ??= config('sirius-ui.currency.decimal_separator') ?? '.';
+    $precision ??= config('sirius-ui.currency.precision') ?? 2;
     if (!in_array($thousandsSeparator, [',', '.', ' ', "'"], true)
         || !in_array($decimalSeparator, ['.', ','], true) || $thousandsSeparator === $decimalSeparator) {
         throw new InvalidArgumentException('Currency requires distinct supported thousands and decimal separators.');

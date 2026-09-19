@@ -72,3 +72,60 @@ it('keeps zero and empty currency defaults distinct', function (): void {
     expect($empty)->toContain('value=""', 'data-precision="2"', 'data-negative="false"');
     expect($zero)->toContain('value="0"', 'data-precision="0"', 'data-negative="true"', 'data-thousands="."', 'data-decimal=","');
 });
+
+it('resolves global currency separators at render time without changing canonical values', function (): void {
+    config(['sirius-ui.currency.thousands_separator' => '.', 'sirius-ui.currency.decimal_separator' => ',']);
+    expect(Blade::render('<x-sirius::currency value="1234.50" />'))
+        ->toContain('data-thousands="."', 'data-decimal=","', 'value="1234.50"');
+
+    config(['sirius-ui.currency.thousands_separator' => ' ', 'sirius-ui.currency.decimal_separator' => '.']);
+    expect(Blade::render('<x-sirius::currency />'))->toContain('data-thousands=" "', 'data-decimal="."');
+});
+
+it('prioritizes explicit currency separators independently over global settings', function (): void {
+    config(['sirius-ui.currency.thousands_separator' => ' ', 'sirius-ui.currency.decimal_separator' => '.']);
+    expect(Blade::render('<x-sirius::currency thousands-separator="," />'))->toContain('data-thousands=","', 'data-decimal="."');
+    expect(Blade::render('<x-sirius::currency decimal-separator="," />'))->toContain('data-thousands=" "', 'data-decimal=","');
+
+    config(['sirius-ui.currency.thousands_separator' => '-', 'sirius-ui.currency.decimal_separator' => '/']);
+    expect(Blade::render('<x-sirius::currency thousands-separator="." decimal-separator="," />'))->toContain('data-thousands="."', 'data-decimal=","');
+});
+
+it('uses built in currency defaults when global configuration is null or missing', function (): void {
+    config(['sirius-ui.currency' => ['thousands_separator' => null, 'decimal_separator' => null]]);
+    expect(Blade::render('<x-sirius::currency :thousands-separator="null" :decimal-separator="null" />'))->toContain('data-thousands=","', 'data-decimal="."');
+
+    app('config')->offsetUnset('sirius-ui.currency');
+    expect(Blade::render('<x-sirius::currency />'))->toContain('data-thousands=","', 'data-decimal="."');
+});
+
+it('validates resolved global currency separators', function (string $thousands, string $decimal, string $props): void {
+    config(['sirius-ui.currency.thousands_separator' => $thousands, 'sirius-ui.currency.decimal_separator' => $decimal]);
+    expect(fn () => Blade::render('<x-sirius::currency ' . $props . ' />'))->toThrow(ViewException::class);
+})->with([
+    'unsupported thousands'                       => ['-', '.', ''],
+    'unsupported decimal'                         => [',', '/', ''],
+    'conflicting defaults'                        => ['.', '.', ''],
+    'override conflicts with inherited separator' => ['.', ',', 'decimal-separator="."'],
+]);
+
+it('inherits global currency precision while preserving explicit zero and canonical values', function (): void {
+    config(['sirius-ui.currency.precision' => '3']);
+    expect(Blade::render('<x-sirius::currency value="1234.500" />'))->toContain('data-precision="3"', 'value="1234.500"');
+    expect(Blade::render('<x-sirius::currency :precision="0" />'))->toContain('data-precision="0"');
+
+    config(['sirius-ui.currency.precision' => 0]);
+    expect(Blade::render('<x-sirius::currency />'))->toContain('data-precision="0"');
+    expect(Blade::render('<x-sirius::currency :precision="2" />'))->toContain('data-precision="2"');
+
+    config(['sirius-ui.currency.precision' => null]);
+    expect(Blade::render('<x-sirius::currency />'))->toContain('data-precision="2"');
+    app('config')->offsetUnset('sirius-ui.currency.precision');
+    expect(Blade::render('<x-sirius::currency />'))->toContain('data-precision="2"');
+});
+
+it('validates inherited currency precision after applying explicit overrides', function (mixed $precision): void {
+    config(['sirius-ui.currency.precision' => $precision]);
+    expect(fn () => Blade::render('<x-sirius::currency />'))->toThrow(ViewException::class);
+    expect(Blade::render('<x-sirius::currency :precision="2" />'))->toContain('data-precision="2"');
+})->with([-1, 21, '1.5', 'invalid']);
