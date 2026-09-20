@@ -35,6 +35,31 @@ it('renders an escaped label with an optional required marker', function (bool $
     expect(str_contains($html, 'aria-hidden="true"'))->toBe($required);
 })->with([true, false]);
 
+it('derives label status IDs while preserving explicit overrides', function (string $attributes, ?string $expectedId): void {
+    $html = Blade::render('<x-sirius::label ' . $attributes . ' status="Ready">Example</x-sirius::label>');
+    preg_match('/<span[^>]*data-sir-label-status[^>]*>/', $html, $matches);
+
+    expect($matches)->toHaveCount(1);
+
+    if (!isset($matches[0])) {
+        throw new RuntimeException('The label status element was not rendered.');
+    }
+
+    if ($expectedId === null) {
+        expect($matches[0])->not->toContain('id="');
+    } else {
+        expect($matches[0])->toContain('id="' . $expectedId . '"');
+    }
+})->with([
+    'label id takes priority' => ['id="email-label" for="email"', 'email-label-label-status'],
+    'control id fallback'     => ['for="email"', 'email-label-status'],
+    'empty label id fallback' => ['id="" for="email"', 'email-label-status'],
+    'no identity'             => ['', null],
+    'explicit override'       => ['id="email-label" for="email" status-id="custom-status"', 'custom-status'],
+    'explicit empty override' => ['for="email" status-id=""', null],
+    'legend identity'         => ['as="legend" id="choices"', 'choices-label-status'],
+]);
+
 it('routes native and reactive attributes to the control and composes helper associations', function (): void {
     $html = Blade::render(<<<'BLADE'
         <x-sirius::field id="profile-email" name="email" label="Email" helper="A private address"

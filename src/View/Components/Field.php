@@ -34,6 +34,7 @@ final class Field extends Component
         public string $wrapperClass = '',
         public bool $showRequiredIndicator = true,
         public bool $showErrors = true,
+        public ?string $labelStatus = null,
     ) {
         $this->id = $id ?? Str::random(5);
 

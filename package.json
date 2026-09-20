@@ -10,6 +10,7 @@
         "@tailwindcss/cli": "^4.1.0",
         "flatpickr": "4.6.13",
         "libphonenumber-js": "1.13.13",
-        "tailwindcss": "^4.1.0"
+        "tailwindcss": "^4.1.0",
+        "tom-select": "2.6.2"
     }
 }

@@ -20,7 +20,7 @@ arch('Livewire classes inherit the framework component directly or indirectly', 
     expect('Sirius\Ui\Livewire')->classes()->toExtend(Component::class);
 });
 
-arch('phone configuration stays independent of persistence', function (): void {
+arch('component support stays independent of persistence', function (): void {
     expect('Sirius\Ui\Support')->not->toUse(['Illuminate\Database', DB::class]);
 });
 

@@ -1,3 +1,4 @@
+@import "../../node_modules/tom-select/dist/css/tom-select.default.css";
 @import "../../node_modules/flatpickr/dist/flatpickr.css";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
@@ -156,3 +157,42 @@
 .sir-date-calendar.multiMonth { overflow-x: auto; }
 
 .sir-date-calendar.flatpickr-calendar.hasTime .flatpickr-time { border-top-color: var(--sir-color-border); }
+
+[data-select-source][hidden] { display: none !important; }
+[data-select-ui] .ts-wrapper { padding: 0; border: 0; font: inherit; }
+[data-select-ui] .ts-control { min-height: 2.625rem; padding: var(--sir-control-padding-y) var(--sir-control-padding-x); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface) !important; color: var(--sir-color-text); box-shadow: none; font: inherit; }
+[data-select-ui] .ts-control input { color: var(--sir-color-text); font: inherit; }
+[data-select-ui] .ts-wrapper.focus .ts-control { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+[data-sir-select]:has([aria-invalid="true"]) .ts-control { border-color: var(--sir-color-danger); }
+[data-select-ui] .ts-dropdown { background: var(--sir-color-surface); color: var(--sir-color-text); border-color: var(--sir-color-border); border-radius: var(--sir-radius); font: inherit; z-index: 30; }
+[data-select-ui] .ts-dropdown .active { background: color-mix(in oklch, var(--sir-color-primary), transparent 85%); color: var(--sir-color-text); }
+[data-select-ui] .ts-dropdown .optgroup-header { background: var(--sir-color-surface); color: var(--sir-color-muted); }
+[data-select-ui] .ts-wrapper.multi .ts-control > div { background: color-mix(in oklch, var(--sir-color-primary), transparent 85%); color: var(--sir-color-text); border-color: var(--sir-color-border); text-shadow: none; box-shadow: none; }
+.sir-select-action { margin-top: .375rem; margin-right: .5rem; padding: .125rem .5rem; border: 1px solid var(--sir-color-border); border-radius: .375rem; color: var(--sir-color-text); font-size: .875rem; }
+.sir-select-action:focus-visible { outline: 2px solid var(--sir-focus-ring); }
+.sir-select-action:disabled { opacity: .55; cursor: not-allowed; }
+
+.sir-select-pagination:has(button:not([hidden])) { padding: .375rem .75rem; border-top: 1px solid var(--sir-color-border); }
+
+.sir-label-row { display: flex; justify-content: space-between; align-items: baseline; gap: .75rem; min-width: 0; }
+.sir-label-status { margin-inline-start: auto; color: var(--sir-color-muted); font-size: .75rem; text-align: end; overflow-wrap: anywhere; }
+.sir-label-status:empty { display: none; }
+.sir-label > .sir-label-status { float: inline-end; }
+[data-sir-select]:has([data-select-ui] .ts-wrapper) > [data-select-source] { display: none !important; }
+.sir-select-shell { border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); gap: 0; align-items: stretch; }
+.sir-select-shell > .ts-wrapper { flex: 1 1 0%; min-width: 0; }
+.sir-select-shell .ts-control { border: 0; }
+.sir-select-shell:focus-within { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+.sir-select-shell .ts-wrapper.focus .ts-control { outline: none; }
+.sir-select-shell:has([aria-invalid="true"]) { border-color: var(--sir-color-danger); }
+.sir-select-suffix { cursor: pointer; border-inline-start: 1px solid var(--sir-color-border); }
+.sir-select-suffix:disabled { cursor: not-allowed; opacity: .55; }
+.sir-select-suffix:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: -2px; }
+
+.sir-select-shell .ts-wrapper.single .ts-control { border: 0; box-shadow: none; }
+[data-select-ui] .ts-dropdown .optgroup { border-top-color: var(--sir-color-border); }
+
+[data-sir-select]:has(> [data-select-source][readonly]) .sir-select-shell,
+[data-sir-select]:has(> [data-select-source][readonly]) .ts-control {
+    background: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 15%) !important;
+}
