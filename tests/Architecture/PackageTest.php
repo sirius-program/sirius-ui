@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Symfony\Component\Finder\Finder;
@@ -17,6 +18,15 @@ arch('production PHP uses strict types and no debugging or environment helpers',
 
 arch('Livewire classes inherit the framework component directly or indirectly', function (): void {
     expect('Sirius\Ui\Livewire')->classes()->toExtend(Component::class);
+});
+
+arch('phone configuration stays independent of persistence', function (): void {
+    expect('Sirius\Ui\Support')->not->toUse(['Illuminate\Database', DB::class]);
+});
+
+arch('reusable validation rules implement the Laravel contract without persistence', function (): void {
+    expect('Sirius\Ui\Rules')->classes()->toImplement(ValidationRule::class);
+    expect('Sirius\Ui\Rules')->not->toUse(['Illuminate\Database', DB::class]);
 });
 
 arch('class-backed Blade adapters extend the framework component without querying models', function (): void {

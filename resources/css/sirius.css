@@ -69,6 +69,10 @@
     .sir-field--inline .sir-control { width: auto; margin-top: 0.25rem; padding: 0; }
     .sir-input-shell { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
     .sir-input-shell > .sir-control { flex: 1 1 0%; width: 0; }
+    .sir-phone-country { border: 0; font: inherit; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; flex: 0 0 auto; width: calc(5ch + 2 * var(--sir-control-padding-x) + 1rem); max-width: calc(5ch + 2 * var(--sir-control-padding-x) + 1rem); }
+    .sir-phone-country:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+    .sir-phone-country:disabled { cursor: not-allowed; }
+    .sir-phone-country option { color: var(--sir-color-text); background: var(--sir-color-surface); }
     .sir-adornment { flex: 0 1 auto; max-width: 35%; overflow-wrap: anywhere; color: var(--sir-color-muted); }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) {
         align-items: stretch;
