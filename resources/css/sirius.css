@@ -87,7 +87,7 @@
     }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > .sir-control { border: 0; border-radius: 0; }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > :first-child { border-start-start-radius: calc(var(--sir-radius) - 1px); border-end-start-radius: calc(var(--sir-radius) - 1px); }
-    .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > :last-child { border-start-end-radius: calc(var(--sir-radius) - 1px); border-end-end-radius: calc(var(--sir-radius) - 1px); }
+    .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > :nth-last-child(1 of :not([type="hidden"], [hidden])) { border-start-end-radius: calc(var(--sir-radius) - 1px); border-end-end-radius: calc(var(--sir-radius) - 1px); }
     .sir-input-shell > :is(.sir-adornment, .sir-password-toggle) {
         display: flex;
         align-items: center;
@@ -95,7 +95,7 @@
         background: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 45%);
     }
     .sir-input-shell > .sir-adornment:first-child { border-inline-end: 1px solid var(--sir-color-border); }
-    .sir-input-shell > .sir-control + .sir-adornment { border-inline-start: 1px solid var(--sir-color-border); }
+    .sir-input-shell > .sir-control ~ .sir-adornment { border-inline-start: 1px solid var(--sir-color-border); }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])):has(> .sir-control:focus-visible) { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])) > .sir-control:focus-visible { outline: none; }
     .sir-input-shell:has(> .sir-adornment, > .sir-password-toggle:not([hidden])):has(> .sir-control[aria-invalid="true"]) { border-color: var(--sir-color-danger); }
@@ -139,6 +139,10 @@
 
 /* Scoped widget overrides use the same tokens as native package fields. */
 .sir-date-calendar.flatpickr-calendar { background: var(--sir-color-surface); color: var(--sir-color-text); border: 1px solid var(--sir-color-border); box-shadow: 0 4px 16px #0002; border-radius: var(--sir-radius); }
+.sir-date-calendar .flatpickr-months { border-start-start-radius: inherit; border-start-end-radius: inherit; overflow: hidden; }
+.sir-date-calendar:not(.hasTime) .flatpickr-innerContainer { border-end-start-radius: inherit; border-end-end-radius: inherit; overflow: hidden; }
+.sir-date-calendar .flatpickr-time { border-end-start-radius: inherit; border-end-end-radius: inherit; }
+.sir-date-calendar.noCalendar .flatpickr-time { border-radius: inherit; }
 .sir-date-calendar .flatpickr-months .flatpickr-month,
 .sir-date-calendar .flatpickr-weekdays, .sir-date-calendar span.flatpickr-weekday,
 .sir-date-calendar .flatpickr-current-month .flatpickr-monthDropdown-months,
