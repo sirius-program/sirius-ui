@@ -1,4 +1,7 @@
 @import "../../node_modules/tom-select/dist/css/tom-select.default.css";
+@import "../../node_modules/filepond/dist/filepond.min.css";
+@import "../../node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+@import "../../node_modules/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.min.css";
 @import "../../node_modules/flatpickr/dist/flatpickr.css";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
@@ -195,4 +198,18 @@
 [data-sir-select]:has(> [data-select-source][readonly]) .sir-select-shell,
 [data-sir-select]:has(> [data-select-source][readonly]) .ts-control {
     background: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 15%) !important;
+}
+
+[data-sir-file-upload] .filepond--root { margin: 0; font: inherit; color: var(--sir-color-text); }
+[data-sir-file-upload] .filepond--sirius-pdf-preview { position: absolute; inset: 0; padding: 3rem 0.5rem 0.5rem; width: 100%; }
+[data-sir-file-upload] .filepond--sirius-pdf-preview object { display: block; width: 100%; background: var(--sir-color-surface); }
+[data-sir-file-upload] .filepond--sirius-pdf-preview a { display: block; padding-top: 0.5rem; text-decoration: underline; overflow-wrap: anywhere; }
+[data-sir-file-upload]:has([data-upload-ui] .filepond--root) > [data-upload-source] { display: none !important; }
+[data-sir-file-upload] .filepond--panel-root { background: var(--sir-color-surface); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); }
+[data-sir-file-upload] .filepond--drop-label { color: var(--sir-color-text); }
+[data-sir-file-upload] .filepond--file-action-button:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+[data-sir-file-upload]:has([data-upload-source][readonly]) .filepond--panel-root { background: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 15%); }
+[data-sir-file-upload]:has([data-upload-source][aria-invalid="true"]) .filepond--panel-root { border-color: var(--sir-color-danger); }
+@media (prefers-reduced-motion: reduce) {
+    [data-sir-file-upload] *, [data-sir-file-upload] *::before, [data-sir-file-upload] *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
 }

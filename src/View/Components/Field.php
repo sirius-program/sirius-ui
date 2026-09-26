@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sirius\Ui\View\Components;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\ViewErrorBag;
@@ -72,7 +73,7 @@ final class Field extends Component
             return [];
         }
 
-        return array_values(array_filter($errors->getBag($this->errorBag)->get($key), is_string(...)));
+        return array_values(array_filter(Arr::flatten($errors->getBag($this->errorBag)->get($key)), is_string(...)));
     }
 
     /** @return array{required: bool, key: ?string, bag: string, errors: ?ViewErrorBag, description: ?string}|null */

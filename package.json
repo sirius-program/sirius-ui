@@ -8,6 +8,11 @@
     },
     "devDependencies": {
         "@tailwindcss/cli": "^4.1.0",
+        "filepond": "4.32.12",
+        "filepond-plugin-file-poster": "2.5.2",
+        "filepond-plugin-file-validate-size": "2.2.8",
+        "filepond-plugin-file-validate-type": "1.2.9",
+        "filepond-plugin-image-preview": "4.6.12",
         "flatpickr": "4.6.13",
         "libphonenumber-js": "1.13.13",
         "tailwindcss": "^4.1.0",
