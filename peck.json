@@ -3,7 +3,15 @@
     "ignore": {
         "words": [
             "php",
-            "testbench"
+            "testbench",
+            "richtext",
+            "tiptap",
+            "blockquote",
+            "dropdown",
+            "tooltip",
+            "utils",
+            "radix",
+            "keyframe"
         ],
         "paths": []
     }

@@ -7,7 +7,7 @@
     'prefix' => null, 'suffix' => null, 'value' => null,
     'checked' => false, 'indeterminate' => false, 'resize' => 'vertical',
     'showLabel' => 'Show', 'hideLabel' => 'Hide',
-    'editor' => false, 'controlSize' => null,
+    'controlSize' => null,
 ])
 @php
     $choice = in_array($kind, ['checkbox', 'radio', 'switch'], true);
@@ -26,8 +26,8 @@
     if ($kind === 'input' && !in_array($type, ['text', 'number', 'password'], true)) {
         throw new InvalidArgumentException('Input type must be text, number, or password.');
     }
-    if ($kind === 'textarea' && (!in_array($resize, ['none', 'vertical', 'horizontal', 'both'], true) || $editor)) {
-        throw new InvalidArgumentException('Textarea resize must be none, vertical, horizontal, or both. Editor is scheduled for Phase 7.');
+    if ($kind === 'textarea' && !in_array($resize, ['none', 'vertical', 'horizontal', 'both'], true)) {
+        throw new InvalidArgumentException('Textarea resize must be none, vertical, horizontal, or both.');
     }
     if ($indeterminate && $kind !== 'checkbox') {
         throw new InvalidArgumentException('Only checkbox supports indeterminate.');
