@@ -3,6 +3,12 @@
 declare(strict_types=1);
 
 return [
+    'slider' => [
+        'lower'   => 'Lower value',
+        'upper'   => 'Upper value',
+        'value'   => 'Value',
+        'invalid' => 'Choose ordered values within the bounds and on the allowed steps.',
+    ],
     'richtext' => [
         'image'           => 'Upload image',
         'open_link'       => 'Open link',
