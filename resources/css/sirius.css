@@ -216,7 +216,7 @@
 
 [data-select-source][hidden] { display: none !important; }
 [data-select-ui] .ts-wrapper { padding: 0; border: 0; font: inherit; }
-[data-select-ui] .ts-control { min-height: 2.625rem; padding: var(--sir-control-padding-y) var(--sir-control-padding-x); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface) !important; color: var(--sir-color-text); box-shadow: none; font: inherit; }
+[data-select-ui] .ts-control { min-height: calc(1lh + 2 * var(--sir-control-padding-y)); padding: var(--sir-control-padding-y) var(--sir-control-padding-x); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface) !important; color: var(--sir-color-text); box-shadow: none; font: inherit; }
 [data-select-ui] .ts-control input { color: var(--sir-color-text); font: inherit; }
 [data-select-ui] .ts-wrapper.focus .ts-control { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
 [data-sir-select]:has([aria-invalid="true"]) .ts-control { border-color: var(--sir-color-danger); }
