@@ -133,3 +133,44 @@ if (!window[presentationOwner]) {
         }
     }).observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ['hidden', 'data-reset-key'] });
 }
+
+const accordionOwner = Symbol.for('sirius.ui.accordion');
+if (!window[accordionOwner]) {
+    window[accordionOwner] = true;
+    const states = new WeakMap();
+    function syncAccordion(details, notify = false) {
+        if (!details?.matches?.('[data-sir-accordion]')) return;
+        const trigger = details.querySelector(':scope > summary');
+        const content = details.querySelector(':scope > .sir-accordion-content');
+        if (!trigger || !content) return;
+        const previous = states.get(details);
+        if (!details.open && content.contains(document.activeElement)) trigger.focus({ preventScroll: true });
+        const expanded = String(details.open);
+        if (trigger.getAttribute('aria-expanded') !== expanded) trigger.setAttribute('aria-expanded', expanded);
+        content.inert = !details.open;
+        states.set(details, details.open);
+        if (previous === undefined || previous === details.open) return;
+        content.getAnimations().forEach(animation => animation.cancel());
+        if (details.open && details.dataset.transition === 'true' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            content.animate([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 160, easing: 'ease-out' });
+        }
+        if (notify) details.dispatchEvent(new CustomEvent('accordion:toggle', { bubbles: true, detail: { id: details.id, open: details.open } }));
+    }
+    function initializeAccordions(root) {
+        if (!(root instanceof Element || root instanceof Document)) return;
+        syncAccordion(root);
+        root.querySelectorAll('[data-sir-accordion]').forEach(details => syncAccordion(details));
+    }
+    document.addEventListener('toggle', event => syncAccordion(event.target, true), true);
+    new MutationObserver(records => {
+        for (const record of records) {
+            if (record.type === 'attributes') syncAccordion(record.target.closest('[data-sir-accordion]'), true);
+            else {
+                record.addedNodes.forEach(initializeAccordions);
+                syncAccordion(record.target.closest?.('[data-sir-accordion]'));
+            }
+        }
+    }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['open', 'aria-expanded'] });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => initializeAccordions(document), { once: true });
+    else initializeAccordions(document);
+}
