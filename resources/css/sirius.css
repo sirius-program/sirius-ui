@@ -266,3 +266,58 @@
 @media (prefers-reduced-motion: reduce) {
     [data-sir-file-upload] *, [data-sir-file-upload] *::before, [data-sir-file-upload] *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
 }
+
+/* Shared presentation tokens use Tailwind semantic colors. */
+:root {
+    --sir-info-bg: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 25%); --sir-info-text: var(--sir-color-text); --sir-info-border: var(--sir-color-border);
+    --sir-secondary-bg: var(--color-indigo-100); --sir-secondary-text: var(--color-indigo-900); --sir-secondary-border: var(--color-indigo-300);
+    --sir-primary-bg: var(--color-sky-100); --sir-primary-text: var(--color-sky-900); --sir-primary-border: var(--color-sky-300);
+    --sir-success-bg: var(--color-emerald-100); --sir-success-text: var(--color-emerald-900); --sir-success-border: var(--color-emerald-300);
+    --sir-danger-bg: var(--color-red-100); --sir-danger-text: var(--color-red-900); --sir-danger-border: var(--color-red-300);
+    --sir-warning-bg: var(--color-amber-100); --sir-warning-text: var(--color-amber-900); --sir-warning-border: var(--color-amber-300);
+}
+.dark {
+    --sir-info-bg: color-mix(in oklch, var(--sir-color-surface), var(--sir-color-border) 25%); --sir-info-text: var(--sir-color-text); --sir-info-border: var(--sir-color-border);
+    --sir-secondary-bg: var(--color-indigo-950); --sir-secondary-text: var(--color-indigo-200); --sir-secondary-border: var(--color-indigo-700);
+    --sir-primary-bg: var(--color-sky-950); --sir-primary-text: var(--color-sky-200); --sir-primary-border: var(--color-sky-700);
+    --sir-success-bg: var(--color-emerald-950); --sir-success-text: var(--color-emerald-200); --sir-success-border: var(--color-emerald-700);
+    --sir-danger-bg: var(--color-red-950); --sir-danger-text: var(--color-red-200); --sir-danger-border: var(--color-red-700);
+    --sir-warning-bg: var(--color-amber-950); --sir-warning-text: var(--color-amber-200); --sir-warning-border: var(--color-amber-700);
+}
+@layer components {
+    .sir-icon { display: inline-block; flex-shrink: 0; vertical-align: middle; width: 1.25rem; height: 1.25rem; }
+    .sir-icon--sm { width: 1rem; height: 1rem; }
+    .sir-icon--lg { width: 1.5rem; height: 1.5rem; }
+    .sir-tone--primary { --sir-tone-bg: var(--sir-primary-bg); --sir-tone-text: var(--sir-primary-text); --sir-tone-border: var(--sir-primary-border); }
+    .sir-tone--info { --sir-tone-bg: var(--sir-info-bg); --sir-tone-text: var(--sir-info-text); --sir-tone-border: var(--sir-info-border); }
+    .sir-tone--success { --sir-tone-bg: var(--sir-success-bg); --sir-tone-text: var(--sir-success-text); --sir-tone-border: var(--sir-success-border); }
+    .sir-tone--danger { --sir-tone-bg: var(--sir-danger-bg); --sir-tone-text: var(--sir-danger-text); --sir-tone-border: var(--sir-danger-border); }
+    .sir-tone--warning { --sir-tone-bg: var(--sir-warning-bg); --sir-tone-text: var(--sir-warning-text); --sir-tone-border: var(--sir-warning-border); }
+    .sir-tone--secondary { --sir-tone-bg: var(--sir-secondary-bg); --sir-tone-text: var(--sir-secondary-text); --sir-tone-border: var(--sir-secondary-border); }
+    .sir-tone--ghost, .sir-tone--link { --sir-tone-bg: transparent; --sir-tone-text: var(--sir-color-text); --sir-tone-border: transparent; }
+    .sir-tone--outline { --sir-tone-bg: transparent; --sir-tone-text: var(--sir-color-text); --sir-tone-border: var(--sir-color-border); }
+    .sir-button, .sir-badge, .sir-message { color: var(--sir-tone-text); background: var(--sir-tone-bg); border: 1px solid var(--sir-tone-border); border-radius: var(--sir-radius); }
+    .sir-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .5rem .875rem; font-size: 1rem; line-height: 1.5; font-weight: 500; text-decoration: none; cursor: pointer; transition: background-color 150ms, opacity 150ms; }
+    .sir-button.sir-size--sm { font-size: .875rem; padding: .375rem .625rem; }
+    .sir-button.sir-size--lg { font-size: 1.125rem; padding: .625rem 1rem; }
+    .sir-button.sir-tone--link { text-decoration: underline; text-underline-offset: .2em; color: var(--sir-color-primary); }
+    .sir-button:not(:disabled):not([aria-disabled="true"]):hover { background: color-mix(in oklch, var(--sir-tone-bg), var(--sir-color-border) 25%); }
+    .sir-button:focus-visible, .sir-message-dismiss:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; position: relative; z-index: 1; }
+    .sir-button:disabled, .sir-button[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+    .sir-button-group { display: inline-flex; align-items: stretch; isolation: isolate; max-width: 100%; }
+    .sir-button-group > .sir-button { border-radius: 0; }
+    .sir-button-group > .sir-button:first-child { border-start-start-radius: var(--sir-radius); border-end-start-radius: var(--sir-radius); }
+    .sir-button-group > .sir-button:last-child { border-start-end-radius: var(--sir-radius); border-end-end-radius: var(--sir-radius); }
+    .sir-button-group > .sir-button + .sir-button { margin-inline-start: -1px; }
+    .sir-badge { display: inline-flex; align-items: center; gap: .25rem; padding: .125rem .5rem; font-size: .875rem; line-height: 1.5; font-weight: 500; }
+    .sir-badge.sir-size--sm { font-size: .75rem; padding: .0625rem .375rem; }
+    .sir-badge.sir-size--lg { font-size: 1rem; padding: .25rem .625rem; }
+    .sir-message { display: flex; align-items: center; gap: .75rem; padding: 1rem; }
+    .sir-message-content { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .sir-message-dismiss { display: inline-flex; padding: .25rem; border-radius: .25rem; cursor: pointer; color: inherit; }
+    .sir-message-dismiss:hover { background: color-mix(in oklch, currentColor, transparent 90%); }
+    .sir-spinner { display: inline-block; width: 1em; height: 1em; border: 2px solid currentColor; border-inline-end-color: transparent; border-radius: 50%; animation: sir-spin .8s linear infinite; }
+    @keyframes sir-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .sir-button { transition: none; } .sir-spinner { animation: none; } }
+}
+[data-sir-message][hidden] { display: none !important; }

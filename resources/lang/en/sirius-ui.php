@@ -3,7 +3,8 @@
 declare(strict_types=1);
 
 return [
-    'slider' => [
+    'message' => ['dismiss' => 'Dismiss message'],
+    'slider'  => [
         'lower'   => 'Lower value',
         'upper'   => 'Upper value',
         'value'   => 'Value',

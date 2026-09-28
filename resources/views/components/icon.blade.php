@@ -1,0 +1,23 @@
+@props(['name', 'size' => 'md', 'label' => null])
+@php
+    if (! is_string($name) || ! preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)+$/', $name)) {
+        throw new \InvalidArgumentException('Icon name must be a registered Blade Icons name, such as heroicon-o-check.');
+    }
+    if (! in_array($size, ['sm', 'md', 'lg'], true)) {
+        throw new \InvalidArgumentException('Icon size must be sm, md, or lg.');
+    }
+    if ($label !== null && (! is_string($label) || trim($label) === '')) {
+        throw new \InvalidArgumentException('Icon label must be a non-empty string.');
+    }
+    $iconAttributes = $attributes->except(['title', 'role', 'aria-hidden', 'aria-label', 'focusable'])
+        ->class(['sir-icon', 'sir-icon--'.$size])->getAttributes();
+    $iconAttributes['focusable'] = 'false';
+    if ($label === null) {
+        $iconAttributes['aria-hidden'] = 'true';
+    } else {
+        $iconAttributes['role'] = 'img';
+        $iconAttributes['aria-label'] = $label;
+    }
+    $iconAttributes = array_map(fn ($value) => e($value, false), $iconAttributes);
+@endphp
+{{ svg($name, '', $iconAttributes) }}
