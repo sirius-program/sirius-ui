@@ -34,6 +34,7 @@ final class SiriusUiServiceProvider extends ServiceProvider
         Blade::component(Field::class, 'sirius-internal-field');
         Blade::component('sirius::components.label', 'sirius-internal-label');
         Blade::component('sirius::components.icon', 'sirius-internal-icon');
+        Blade::component('sirius::components.dialog', 'sirius-internal-dialog');
 
         Livewire::addNamespace(
             namespace: $livewireNamespace,

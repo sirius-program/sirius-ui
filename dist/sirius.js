@@ -256,7 +256,7 @@ if (!window[accordionOwner]) {
         if (state.closing && !immediate) return;
         if (!immediate && active === dialog) {
             dialog.dataset.closing = 'true';
-            const animations = dialog.getAnimations().filter(animation => animation.animationName === 'sir-dialog-out');
+            const animations = dialog.getAnimations().filter(animation => ['sir-dialog-out', 'sir-alert-out', 'sir-slideover-out'].includes(animation.animationName));
             if (animations.length) {
                 const closing = state.closing = { animations };
                 Promise.all(animations.map(animation => animation.finished.catch(() => {}))).then(() => {

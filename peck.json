@@ -11,7 +11,8 @@
             "tooltip",
             "utils",
             "radix",
-            "keyframe"
+            "keyframe",
+            "slideover"
         ],
         "paths": []
     }
