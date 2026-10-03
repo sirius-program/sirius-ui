@@ -341,7 +341,8 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 }
 
 @layer components {
-    .sir-dialog { position: fixed; inset: 0; margin: auto; padding: 0; width: min(32rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); color: var(--sir-color-text); box-shadow: 0 20px 50px #0004; }
+    .sir-dialog { position: fixed; inset: 0; margin: auto; padding: 0; width: min(32rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100dvh - 2rem); overflow: hidden; border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); color: var(--sir-color-text); box-shadow: 0 20px 50px #0004; }
+    .sir-dialog[open] { display: flex; flex-direction: column; }
     .sir-dialog:not([open]) { display: none; }
     .sir-dialog::backdrop { background: #0008; }
     .sir-dialog[open], .sir-dialog[open]::backdrop { animation: sir-dialog-in 160ms ease-out; }
@@ -352,7 +353,8 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
     .sir-dialog--full { width: calc(100% - 2rem); }
     .sir-dialog-heading { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: .75rem; padding: 1rem; border-bottom: 1px solid var(--sir-color-border); background: var(--sir-color-surface); }
     .sir-dialog-header { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
-    .sir-dialog-body { isolation: isolate; padding: 1rem; overflow-wrap: anywhere; }
+    .sir-dialog > .sir-dialog-heading, .sir-dialog > .sir-dialog-footer { flex-shrink: 0; }
+    .sir-dialog-body { flex: 1 1 auto; min-width: 0; min-height: 0; isolation: isolate; padding: 1rem; overflow: auto; overscroll-behavior: contain; overflow-wrap: anywhere; }
     .sir-dialog-footer { position: sticky; bottom: 0; z-index: 2; padding: 1rem; border-top: 1px solid var(--sir-color-border); background: var(--sir-color-surface); }
     .sir-dialog-dismiss { display: inline-flex; flex-shrink: 0; margin-inline-start: auto; padding: .25rem; border-radius: .25rem; cursor: pointer; }
     .sir-dialog-dismiss:hover { background: color-mix(in oklch, currentColor, transparent 90%); }
@@ -367,9 +369,6 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
     .sir-alert .sir-dialog-footer { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; }
     .sir-dialog.sir-slideover { inset: auto; margin: 0; max-width: 100%; max-height: 100dvh; overflow: hidden; }
     .sir-dialog.sir-slideover.sir-dialog--full { width: 100%; }
-    .sir-slideover[open] { display: flex; flex-direction: column; }
-    .sir-slideover > .sir-dialog-heading, .sir-slideover > .sir-dialog-footer { flex-shrink: 0; }
-    .sir-slideover > .sir-dialog-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; }
     .sir-dialog.sir-slideover--right { inset: 0 0 0 auto; height: 100dvh; border-radius: var(--sir-radius) 0 0 var(--sir-radius); --sir-slide-x: 100%; --sir-slide-y: 0; }
     .sir-dialog.sir-slideover--left { inset: 0 auto 0 0; height: 100dvh; border-radius: 0 var(--sir-radius) var(--sir-radius) 0; --sir-slide-x: -100%; --sir-slide-y: 0; }
     .sir-dialog.sir-slideover--top, .sir-dialog.sir-slideover--bottom { width: 100%; max-height: min(32rem, calc(100dvh - 2rem)); --sir-slide-x: 0; }
