@@ -80,8 +80,25 @@ function initialize(input) {
         const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: config.timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(part => [part.type, part.value]));
         const now = new Date(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
         state.proxy = document.createElement('input');
+        const dialog = input.closest('dialog');
+        const dialogPosition = picker => {
+            const calendar = picker.calendarContainer;
+            const bounds = input.getBoundingClientRect();
+            const above = String(options.position || 'auto').startsWith('above') || (!String(options.position || 'auto').startsWith('below') && innerHeight - bounds.bottom < calendar.offsetHeight && bounds.top > calendar.offsetHeight);
+            const horizontal = String(options.position || '').split(' ')[1];
+            let left = bounds.left;
+            if (horizontal === 'center') left -= (calendar.offsetWidth - bounds.width) / 2;
+            if (horizontal === 'right') left = bounds.right - calendar.offsetWidth;
+            calendar.style.top = `${Math.max(8, above ? bounds.top - calendar.offsetHeight - 2 : Math.min(bounds.bottom + 2, innerHeight - calendar.offsetHeight - 8))}px`;
+            calendar.style.left = `${Math.max(8, Math.min(left, innerWidth - calendar.offsetWidth - 8))}px`;
+            calendar.style.right = 'auto';
+            calendar.classList.toggle('arrowTop', !above);
+            calendar.classList.toggle('arrowBottom', above);
+        };
+        state.reposition = dialog ? () => dialogPosition(state.picker) : null;
         state.picker = flatpickr(state.proxy, {
             ...options, now,
+            ...(dialog ? { appendTo: wrapper.querySelector('[data-sir-date-overlay]'), position: dialogPosition } : {}),
             locale: { ...locale, ...(config.weekStart === null ? {} : { firstDayOfWeek: Number(config.weekStart) }) },
             dateFormat: config.format, enableTime: config.type !== 'date', noCalendar: config.type === 'time',
             enableSeconds: config.type === 'datetime', mode: 'single', altInput: false,
@@ -171,7 +188,10 @@ document.addEventListener('keydown', event => {
     }
     const state = states.get(event.target);
     if (!state || state.input.disabled || state.input.readOnly) return;
-    if (event.key === 'Escape') { state.picker.close(); return; }
+    if (event.key === 'Escape') {
+        if (state.picker.isOpen) { event.preventDefault(); event.stopPropagation(); }
+        state.picker.close(); return;
+    }
     if (event.key === 'ArrowDown') {
         event.preventDefault(); state.picker.open();
         (state.picker.selectedDateElem || state.picker.todayDateElem || state.picker.hourElement || state.picker.daysContainer?.querySelector('.flatpickr-day:not(.flatpickr-disabled)'))?.focus();
@@ -232,6 +252,15 @@ function connectLivewire() {
     window.Livewire.hook('morphed', ({ el }) => scan(el));
 }
 document.addEventListener('livewire:init', connectLivewire);
+document.addEventListener('dialog:close', event => {
+    for (const state of states.values()) if (event.target.contains(state.input)) state.picker.close();
+});
+
+function repositionDialogs() {
+    for (const state of states.values()) if (state.picker.isOpen) state.reposition?.();
+}
+document.addEventListener('scroll', repositionDialogs, true);
+window.addEventListener('resize', repositionDialogs);
 document.addEventListener('livewire:navigating', () => { for (const state of states.values()) destroy(state); });
 document.addEventListener('livewire:navigated', () => scan(document));
 connectLivewire();

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'dialog'  => ['close' => 'Close'],
     'message' => ['dismiss' => 'Dismiss message'],
     'slider'  => [
         'lower'   => 'Lower value',

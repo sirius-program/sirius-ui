@@ -133,9 +133,26 @@ if (!window[owner]) {
         for (const state of states.values()) if (state.source.form === event.target) { cancelImageUploads(state); set(state, state.initial); emit(state, 'input'); emit(state, 'change'); refresh(state); }
     }));
     let pending = false;
+    const affected = new Set();
     new MutationObserver(records => {
-        if (!records.some(record => !record.target.closest?.('[data-richtext-ui]'))) return;
-        if (!pending) { pending = true; queueMicrotask(() => { pending = false; scan(); }); }
+        for (const record of records) {
+            if (record.target.closest?.('[data-richtext-ui]')) continue;
+            const root = record.target.closest?.('[data-sir-richtext]');
+            if (root) affected.add(root);
+            if (record.type === 'childList') record.addedNodes.forEach(node => {
+                if (node.matches?.('[data-sir-richtext]')) affected.add(node);
+                node.querySelectorAll?.('[data-sir-richtext]').forEach(root => affected.add(root));
+            });
+        }
+        for (const state of states.values()) if (!state.root.isConnected) destroy(state);
+        if (affected.size && !pending) {
+            pending = true;
+            queueMicrotask(() => {
+                pending = false;
+                const roots = [...affected]; affected.clear();
+                roots.forEach(root => { if (root.isConnected) initialize(root); });
+            });
+        }
     }).observe(document.documentElement, { subtree: true, childList: true, attributes: true,
         attributeFilter: ['data-richtext-config', 'disabled', 'readonly', 'required', 'aria-invalid', 'aria-describedby', 'placeholder', 'maxlength', 'minlength'] });
     document.addEventListener('livewire:navigated', scan);

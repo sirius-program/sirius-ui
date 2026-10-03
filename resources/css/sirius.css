@@ -41,7 +41,8 @@
 .sir-slider[data-readonly="true"] .sir-slider-thumb { border-color: var(--sir-color-muted); cursor: default; }
 .sir-slider[data-disabled="true"] { opacity: .55; }
 .sir-slider[data-disabled="true"] .sir-slider-track, .sir-slider[data-disabled="true"] .sir-slider-thumb { cursor: not-allowed; }
-[data-richtext-source][data-richtext-enhanced="true"] { display: none !important; }
+[data-richtext-source][data-richtext-enhanced="true"],
+[data-sir-richtext]:has(> [data-richtext-ui] .tiptap) > [data-richtext-source] { display: none !important; }
 .sir-richtext { border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); color: var(--sir-color-text); position: relative; }
 .sir-richtext:focus-within { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
 .sir-richtext[data-invalid="true"] { border-color: var(--sir-color-danger); }
@@ -87,6 +88,7 @@
     .sir-field {
         @apply min-w-0;
         display: grid;
+        align-content: start;
         gap: var(--sir-field-gap);
         color: var(--sir-color-text);
         font-size: 1rem;
@@ -155,7 +157,7 @@
     :is(.sir-password-toggle, .sir-date-clear):focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
     :is(.sir-password-toggle, .sir-date-clear):disabled { cursor: not-allowed; opacity: 0.55; }
     .sir-icon { width: 1.25rem; height: 1.25rem; }
-    .sir-eye-slash, .sir-password-toggle[aria-pressed="true"] .sir-eye { display: none; }
+    .sir-password-toggle .sir-eye-slash, .sir-password-toggle[aria-pressed="true"] .sir-eye { display: none; }
     .sir-password-toggle[aria-pressed="true"] .sir-eye-slash { display: block; }
     .sir-choice { accent-color: var(--sir-color-primary); }
     .sir-field--inline .sir-choice { width: 1.125em; height: 1.125em; border-radius: 0.25rem; }
@@ -188,6 +190,7 @@
 
 /* Scoped widget overrides use the same tokens as native package fields. */
 .sir-date-calendar.flatpickr-calendar { background: var(--sir-color-surface); color: var(--sir-color-text); border: 1px solid var(--sir-color-border); box-shadow: 0 4px 16px #0002; border-radius: var(--sir-radius); }
+dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 .sir-date-calendar .flatpickr-months { border-start-start-radius: inherit; border-start-end-radius: inherit; overflow: hidden; }
 .sir-date-calendar:not(.hasTime) .flatpickr-innerContainer { border-end-start-radius: inherit; border-end-end-radius: inherit; overflow: hidden; }
 .sir-date-calendar .flatpickr-time { border-end-start-radius: inherit; border-end-end-radius: inherit; }
@@ -335,4 +338,29 @@
     .sir-accordion[open] > .sir-accordion-trigger { border-bottom: 1px solid var(--sir-color-border); border-end-start-radius: 0; border-end-end-radius: 0; }
     .sir-accordion[open] > .sir-accordion-trigger > .sir-accordion-chevron { transform: rotate(180deg); }
     .sir-accordion-content { padding: 1rem; }
+}
+
+@layer components {
+    .sir-dialog { position: fixed; inset: 0; margin: auto; padding: 0; width: min(32rem, calc(100% - 2rem)); max-width: calc(100% - 2rem); max-height: calc(100dvh - 2rem); overflow: auto; border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); color: var(--sir-color-text); box-shadow: 0 20px 50px #0004; }
+    .sir-dialog:not([open]) { display: none; }
+    .sir-dialog::backdrop { background: #0008; }
+    .sir-dialog[open], .sir-dialog[open]::backdrop { animation: sir-dialog-in 160ms ease-out; }
+    .sir-dialog[data-closing="true"], .sir-dialog[data-closing="true"]::backdrop { animation: sir-dialog-out 120ms ease-in forwards; pointer-events: none; }
+    .sir-dialog--sm { width: min(24rem, calc(100% - 2rem)); }
+    .sir-dialog--lg { width: min(48rem, calc(100% - 2rem)); }
+    .sir-dialog--xl { width: min(64rem, calc(100% - 2rem)); }
+    .sir-dialog--full { width: calc(100% - 2rem); }
+    .sir-dialog-heading { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: .75rem; padding: 1rem; border-bottom: 1px solid var(--sir-color-border); background: var(--sir-color-surface); }
+    .sir-dialog-header { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+    .sir-dialog-body { isolation: isolate; padding: 1rem; overflow-wrap: anywhere; }
+    .sir-dialog-footer { position: sticky; bottom: 0; z-index: 2; padding: 1rem; border-top: 1px solid var(--sir-color-border); background: var(--sir-color-surface); }
+    .sir-dialog-dismiss { display: inline-flex; flex-shrink: 0; margin-inline-start: auto; padding: .25rem; border-radius: .25rem; cursor: pointer; }
+    .sir-dialog-dismiss:hover { background: color-mix(in oklch, currentColor, transparent 90%); }
+    .sir-dialog-dismiss:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+}
+
+@keyframes sir-dialog-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sir-dialog-out { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .sir-dialog[open], .sir-dialog[open]::backdrop { animation: none; }
 }

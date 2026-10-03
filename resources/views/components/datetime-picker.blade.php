@@ -122,5 +122,6 @@
         </div>
         <input type="hidden" data-sir-date-value @if ($bindings->isNotEmpty()) wire:ignore @endif name="{{ $name }}" value="{{ $value }}" disabled
             @if ($attributes->has('form')) form="{{ $attributes->get('form') }}" @endif {{ $bindings }}>
+        <div data-sir-date-overlay wire:ignore></div>
     </div>
 </x-sirius-internal-field>
