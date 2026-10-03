@@ -387,6 +387,27 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 }
 
 @keyframes sir-dialog-in { from { opacity: 0; } to { opacity: 1; } }
+@layer components {
+    .sir-avatar { --sir-avatar-size: 2.5rem; position: relative; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; flex-shrink: 0; width: var(--sir-avatar-size); height: var(--sir-avatar-size); overflow: hidden; background: var(--sir-color-border); color: var(--sir-color-text); font-size: calc(var(--sir-avatar-size) * .35); font-weight: 600; }
+    .sir-avatar--sm { --sir-avatar-size: 2rem; }
+    .sir-avatar--lg { --sir-avatar-size: 3rem; }
+    .sir-avatar--xl { --sir-avatar-size: 4rem; }
+    .sir-avatar--rounded { border-radius: var(--sir-radius); }
+    .sir-avatar--circle { border-radius: 50%; }
+    .sir-avatar-fallback { display: inline-flex; align-items: center; justify-content: center; }
+    .sir-avatar-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .sir-avatar[data-image-ready="false"] > .sir-avatar-image, .sir-avatar[data-image-ready="true"] > .sir-avatar-fallback { display: none; }
+    .sir-separator { margin: 0; border: 0; flex-shrink: 0; background: var(--sir-color-border); }
+    .sir-separator--horizontal { height: 1px; width: 100%; }
+    .sir-separator--vertical { width: 1px; align-self: stretch; }
+    .sir-skeleton { display: block; width: var(--sir-skeleton-width); height: var(--sir-skeleton-height); max-width: 100%; flex-shrink: 0; background: var(--sir-color-border); }
+    .sir-skeleton--rounded { border-radius: var(--sir-radius); }
+    .sir-skeleton--circle { border-radius: 50%; }
+    @media (prefers-reduced-motion: no-preference) {
+        .sir-skeleton { animation: sir-skeleton-fade 1.8s ease-in-out infinite; }
+    }
+}
+@keyframes sir-skeleton-fade { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 @keyframes sir-dialog-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes sir-alert-in {
     from { opacity: 0; transform: scale(.85); }
