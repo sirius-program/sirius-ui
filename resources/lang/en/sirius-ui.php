@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 return [
-    'dialog'  => ['close' => 'Close'],
-    'message' => ['dismiss' => 'Dismiss message'],
-    'slider'  => [
+    'breadcrumb' => ['label' => 'Breadcrumb'],
+    'menu'       => ['label' => 'Navigation'],
+    'dialog'     => ['close' => 'Close'],
+    'message'    => ['dismiss' => 'Dismiss message'],
+    'slider'     => [
         'lower'   => 'Lower value',
         'upper'   => 'Upper value',
         'value'   => 'Value',
