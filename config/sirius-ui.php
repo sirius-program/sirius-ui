@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 return [
-    'blade_namespace'    => 'sirius',
-    'livewire_namespace' => 'sirius',
+    'namespace' => [
+        'blade'    => 'sirius',
+        'livewire' => 'sirius',
+    ],
 
     // Priority: sirius-ui.locale > app.locale > app.fallback_locale > 'en'.
     'locale' => env('SIRIUS_UI_LOCALE', env('APP_LOCALE', env('APP_FALLBACK_LOCALE'))),

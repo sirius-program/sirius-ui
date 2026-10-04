@@ -40,7 +40,7 @@ it('accepts the standard presentation variants without forwarding variant as HTM
 })->with(['primary', 'info', 'success', 'danger', 'warning', 'secondary', 'ghost', 'outline']);
 
 it('composes both overlays with a configured public namespace', function (): void {
-    config(['sirius-ui.blade_namespace' => 'custom']);
+    config(['sirius-ui.namespace.blade' => 'custom']);
     (new SiriusUiServiceProvider(app()))->boot();
     $html = Blade::render('<x-custom::alert text="Saved" /><x-custom::slideover header="Order">Details</x-custom::slideover>');
     expect($html)->toContain('sir-alert', 'sir-slideover', 'Details');

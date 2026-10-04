@@ -93,7 +93,7 @@ it('rejects unsupported input types and invalid options instead of silently chan
 ]);
 
 it('renders controls under a configured namespace', function (): void {
-    config(['sirius-ui.blade_namespace' => 'custom']);
+    config(['sirius-ui.namespace.blade' => 'custom']);
     (new SiriusUiServiceProvider(app()))->boot();
 
     expect(Blade::render('<x-custom::input id="custom" label="Custom" />'))->toContain('for="custom"', 'id="custom"');

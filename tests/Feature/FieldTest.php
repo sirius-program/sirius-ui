@@ -145,7 +145,7 @@ it('supports inline labels and accessible choice groups without requiring every 
 });
 
 it('supports configured Blade namespaces for the field and its nested label', function (): void {
-    config(['sirius-ui.blade_namespace' => 'custom']);
+    config(['sirius-ui.namespace.blade' => 'custom']);
     (new SiriusUiServiceProvider(app()))->boot();
 
     expect(Blade::render('<x-custom::field id="custom-email" label="Email"><input {{ $component->controlAttributes() }}></x-custom::field>'))

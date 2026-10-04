@@ -19,8 +19,8 @@ final class SiriusUiServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $bladeNamespace = $this->componentNamespace('sirius-ui.blade_namespace');
-        $livewireNamespace = $this->componentNamespace('sirius-ui.livewire_namespace');
+        $bladeNamespace = $this->componentNamespace('sirius-ui.namespace.blade');
+        $livewireNamespace = $this->componentNamespace('sirius-ui.namespace.livewire');
 
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'sirius');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'sirius');
