@@ -66,6 +66,15 @@ return [
         'upload'        => 'Upload',
         'busy'          => 'Wait for uploads to finish or remove failed files.',
     ],
+    'tabs' => [
+        'label' => 'Content sections',
+    ],
+    'timeline' => [
+        'label'     => 'Progress',
+        'completed' => 'Completed',
+        'current'   => 'Current',
+        'upcoming'  => 'Upcoming',
+    ],
     'select' => [
         'placeholder'  => 'Select an option',
         'clear'        => 'Clear',

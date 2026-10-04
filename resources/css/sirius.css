@@ -344,6 +344,37 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
     --sir-warning-bg: var(--color-amber-950); --sir-warning-text: var(--color-amber-200); --sir-warning-border: var(--color-amber-700);
 }
 @layer components {
+    .sir-tabs { min-width: 0; color: var(--sir-color-text); }
+    .sir-tab-list { display: flex; overflow-x: auto; }
+    .sir-tab-list::after { content: ''; flex: 1; border-bottom: 1px solid var(--sir-color-border); }
+    .sir-tab { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; flex-shrink: 0; padding: .5rem 1rem; border: 1px solid transparent; border-radius: var(--sir-radius) var(--sir-radius) 0 0; background: linear-gradient(var(--sir-color-border), var(--sir-color-border)) bottom / 100% 1px no-repeat border-box; color: var(--sir-color-primary); font-weight: 500; cursor: pointer; }
+    .sir-tab:not(:disabled):hover { border-color: var(--sir-color-border); }
+    .sir-tab[aria-selected="true"], .sir-tab[aria-selected="true"]:hover { color: var(--sir-color-text); background: transparent; border-color: var(--sir-color-border); border-bottom-width: 0; padding-bottom: calc(.5rem + 1px); }
+    .sir-tab:disabled { color: var(--sir-color-muted); cursor: not-allowed; }
+    .sir-tab:focus-visible, .sir-tab-panel:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: -2px; }
+    .sir-tab-panels { min-width: 0; flex: 1; }
+    .sir-tab-panel { padding: 1rem 0; overflow-wrap: anywhere; }
+    .sir-tab-panel[hidden] { display: none !important; }
+    .sir-tabs[data-orientation="vertical"] { display: flex; gap: 1rem; }
+    .sir-tabs[data-orientation="vertical"] > .sir-tab-list { flex-direction: column; flex-shrink: 0; max-width: 45%; }
+    .sir-tabs[data-orientation="vertical"] > .sir-tab-list::after { border-bottom: 0; border-inline-end: 1px solid var(--sir-color-border); }
+    .sir-tabs[data-orientation="vertical"] > .sir-tab-list > .sir-tab { justify-content: flex-start; white-space: normal; overflow-wrap: anywhere; padding-bottom: .5rem; border-bottom-width: 1px; border-bottom-color: transparent; background-position: right; background-size: 1px 100%; border-radius: 0; border-start-start-radius: var(--sir-radius); border-end-start-radius: var(--sir-radius); }
+    .sir-tabs[data-orientation="vertical"]:dir(rtl) > .sir-tab-list > .sir-tab { background-position: left; }
+    .sir-tabs[data-orientation="vertical"] > .sir-tab-list > .sir-tab:not(:disabled):hover { border-color: var(--sir-color-border); }
+    .sir-tabs[data-orientation="vertical"] > .sir-tab-list > .sir-tab[aria-selected="true"], .sir-tabs[data-orientation="vertical"] > .sir-tab-list > .sir-tab[aria-selected="true"]:hover { border-color: var(--sir-color-border); border-inline-end-width: 0; padding-inline-end: calc(1rem + 1px); }
+    .sir-timeline { list-style: none; margin: 0; padding: 0; color: var(--sir-color-text); }
+    .sir-timeline-item { position: relative; display: flex; gap: .75rem; padding-bottom: 1.5rem; }
+    .sir-timeline-item:last-child { padding-bottom: 0; }
+    .sir-timeline-item:not(:last-child)::before { content: ''; position: absolute; inset-inline-start: 1.0625rem; top: 2.25rem; bottom: 0; width: 2px; background: var(--sir-color-border); }
+    .sir-timeline-marker { box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 2.25rem; height: 2.25rem; border: 1px solid var(--sir-color-border); border-radius: 50%; color: var(--sir-color-muted); background: var(--sir-color-surface); font-size: .875rem; }
+    .sir-timeline-item[data-state="completed"] > .sir-timeline-marker, .sir-timeline-item[data-state="current"] > .sir-timeline-marker { color: var(--sir-primary-text); background: var(--sir-primary-bg); border-color: var(--sir-primary-border); }
+    .sir-timeline-item[data-state="current"] > .sir-timeline-marker { box-shadow: 0 0 0 4px color-mix(in oklch, var(--sir-primary-border), transparent 80%); }
+    .sir-timeline-dot { width: .5rem; height: .5rem; border-radius: 50%; background: currentColor; }
+    .sir-timeline-content { min-width: 0; flex: 1; padding-top: .25rem; overflow-wrap: anywhere; }
+    .sir-timeline-title { font-weight: 600; }
+    .sir-timeline-item[data-state="upcoming"] .sir-timeline-title { color: var(--sir-color-muted); }
+    .sir-timeline-description { margin: .25rem 0 0; color: var(--sir-color-muted); font-size: .875rem; }
+    .sir-timeline-extra { margin-top: .75rem; }
     .sir-icon { display: inline-block; flex-shrink: 0; vertical-align: middle; width: 1.25rem; height: 1.25rem; }
     .sir-icon--sm { width: 1rem; height: 1rem; }
     .sir-icon--lg { width: 1.5rem; height: 1.5rem; }
