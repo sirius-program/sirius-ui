@@ -344,6 +344,28 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
     --sir-warning-bg: var(--color-amber-950); --sir-warning-text: var(--color-amber-200); --sir-warning-border: var(--color-amber-700);
 }
 @layer components {
+    [data-sir-toast] { display: contents; }
+    .sir-toast-panel { display: none; position: fixed; inset: auto; margin: 0; padding: 1rem; box-sizing: border-box; width: min(24rem, calc(100vw - 2rem)); max-height: calc((100dvh - 3.5rem) / 3); overflow: auto; border: 1px solid var(--sir-tone-border); border-radius: var(--sir-radius); color: var(--sir-tone-text); background: var(--sir-tone-bg); box-shadow: 0 8px 24px #0002; overflow-wrap: anywhere; }
+    .sir-toast-panel.sir-tone--ghost, .sir-toast-panel.sir-tone--outline { background: var(--sir-color-surface); }
+    .sir-toast-panel:popover-open { display: block; }
+    .sir-toast-panel::backdrop { background: transparent; pointer-events: none; }
+    .sir-toast-panel[data-position^="top-"] { top: calc(1rem + var(--sir-toast-offset, 0px)); }
+    .sir-toast-panel[data-position^="bottom-"] { bottom: calc(1rem + var(--sir-toast-offset, 0px)); }
+    .sir-toast-panel[data-position$="-start"] { inset-inline-start: 1rem; }
+    .sir-toast-panel[data-position$="-end"] { inset-inline-end: 1rem; }
+    .sir-toast-panel[data-position$="-center"] { left: 50%; translate: -50% 0; }
+    .sir-toast-content { display: flex; align-items: center; gap: .75rem; }
+    .sir-toast-icon { width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+    .sir-toast-copy { flex: 1; min-width: 0; }
+    .sir-toast-title { font-weight: 600; margin-bottom: .25rem; }
+    .sir-toast-footer { margin-top: .75rem; }
+    .sir-toast-dismiss { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: .25rem; border-radius: .25rem; cursor: pointer; }
+    .sir-toast-dismiss:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+    .sir-toast-announcement { position: fixed; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+    @media (prefers-reduced-motion: no-preference) {
+        .sir-toast-panel:popover-open { animation: sir-toast-in 160ms ease-out; }
+        .sir-toast-panel[data-closing="true"] { animation: sir-toast-out 140ms ease-in forwards; pointer-events: none; }
+    }
     .sir-tabs { min-width: 0; color: var(--sir-color-text); }
     .sir-tab-list { display: flex; overflow-x: auto; }
     .sir-tab-list::after { content: ''; flex: 1; border-bottom: 1px solid var(--sir-color-border); }
@@ -500,6 +522,8 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 }
 @keyframes sir-skeleton-fade { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
 @keyframes sir-dialog-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes sir-toast-in { from { opacity: 0; transform: translateY(-.5rem); } to { opacity: 1; transform: translateY(0); } }
+@keyframes sir-toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-.5rem); } }
 @keyframes sir-alert-in {
     from { opacity: 0; transform: scale(.85); }
     60% { opacity: 1; transform: scale(1.035); }

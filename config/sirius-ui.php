@@ -20,4 +20,9 @@ return [
         'precision'           => env('SIRIUS_UI_CURRENCY_PRECISION', 2),
         'decimal_separator'   => env('SIRIUS_UI_CURRENCY_DECIMAL_SEPARATOR', '.'),
     ],
+
+    'toast' => [
+        'duration' => env('SIRIUS_UI_TOAST_DURATION', 5000),
+        'position' => env('SIRIUS_UI_TOAST_POSITION', 'top-end'),
+    ],
 ];
