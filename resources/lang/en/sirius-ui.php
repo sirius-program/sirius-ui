@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'breadcrumb' => ['label' => 'Breadcrumb'],
     'menu'       => ['label' => 'Navigation'],
+    'popover'    => ['label' => 'More information'],
     'dialog'     => ['close' => 'Close'],
     'message'    => ['dismiss' => 'Dismiss message'],
     'slider'     => [
