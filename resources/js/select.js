@@ -5,21 +5,35 @@ if (!window[key]) {
     const selector = '[data-sir-select]';
     const list = value => value == null || value === '' ? [] : (Array.isArray(value) ? value : [value]).map(String);
     const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const settings = ({ values, ...config }) => config;
     function status(state, message) {
         state.message = message;
         const target = state.root.closest('.sir-field')?.querySelector('[data-sir-label-status]');
         if (target && target.textContent !== message) target.textContent = message;
     }
     function records(source) {
-        return [...source.options].filter(o => o.value !== '').map(o => ({ value: o.value, label: o.textContent, disabled: o.disabled || o.parentElement.disabled === true, group: o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : '' }));
+        return [...source.options].filter(o => o.value !== '').map(o => ({ value: o.value, label: o.textContent, disabled: o.disabled || o.parentElement.disabled === true, group: o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : '', unresolved: o.hasAttribute('data-select-unresolved') }));
     }
     function add(state, rows) {
         for (const row of rows) {
+            if (row.unresolved && state.tom.options[row.value]) continue;
             if (row.group) state.tom.addOptionGroup(row.group, { value: row.group, label: row.group });
             const option = { ...row, optgroup: row.group || '' };
             if (state.tom.options[row.value]) state.tom.updateOption(row.value, option);
             else state.tom.addOption(option);
         }
+    }
+    function revealSearch(state) {
+        const tom = state.tom;
+        if (!state.config.multiple || !state.root.isConnected || tom.isInputHidden || document.activeElement !== tom.control_input) return;
+        const control = tom.control;
+        const bounds = control.getBoundingClientRect();
+        const input = tom.control_input.getBoundingClientRect();
+        const styles = getComputedStyle(control);
+        const left = bounds.left + control.clientLeft + parseFloat(styles.paddingLeft);
+        const right = bounds.left + control.clientLeft + control.clientWidth - parseFloat(styles.paddingRight);
+        if (input.right > right) control.scrollLeft += input.right - right;
+        else if (input.left < left) control.scrollLeft += input.left - left;
     }
     function write(state, emit = false) {
         const values = state.values;
@@ -31,6 +45,7 @@ if (!window[key]) {
         state.signature = JSON.stringify(records(state.source));
         state.clear.hidden = !state.config.clearable || values.length === 0;
         state.clear.disabled = state.source.disabled || state.source.hasAttribute('readonly');
+        queueMicrotask(() => revealSearch(state));
         if (emit) {
             state.model.dispatchEvent(new Event('input', { bubbles: true }));
             state.model.dispatchEvent(new Event('change', { bubbles: true }));
@@ -146,7 +161,7 @@ if (!window[key]) {
         const ui = root.querySelector('[data-select-ui]');
         const config = JSON.parse(root.dataset.selectConfig);
         let state = states.get(root);
-        if (state && (state.source !== source || state.model !== model || !same(state.config, config))) {
+        if (state && (state.source !== source || state.model !== model || !same(settings(state.config), settings(config)))) {
             const previous = !same(state.config.values, config.values) ? (config.multiple ? config.values : config.values[0] ?? null) : model.value;
             destroy(state);
             if (previous !== undefined) model.value = previous;
@@ -174,7 +189,7 @@ if (!window[key]) {
                     state.values = [...this.items]; write(state, true);
                 },
                 onType(query) { if (config.url) schedule(state, query); },
-                onFocus() { if (config.url && !state.clearing) schedule(state, this.control_input.value); },
+                onFocus() { queueMicrotask(() => revealSearch(state)); if (config.url && !state.clearing) schedule(state, this.control_input.value); },
                 onBlur() { model.dispatchEvent(new Event('blur')); },
             });
             tom.control_input.id = source.id + '-search';
@@ -222,6 +237,11 @@ if (!window[key]) {
                 if (!config.url) state.tom.clearOptions();
                 add(state, current);
                 state.tom.refreshOptions(false);
+            }
+            if (!same(state.config.values, config.values)) {
+                state.config.values = config.values;
+                state.initial = config.values;
+                set(state, config.values);
             }
         }
         sync(state);

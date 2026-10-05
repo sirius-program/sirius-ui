@@ -1,3 +1,66 @@
+(() => {
+    const owner = Symbol.for('sirius.ui.table');
+    if (window[owner]) return;
+    window[owner] = true;
+    const states = new Map();
+
+    function scan() {
+        for (const [root] of states) if (!root.isConnected) states.delete(root);
+        for (const root of document.querySelectorAll('[data-sir-table]')) {
+            let state = states.get(root);
+            if (!state) { state = { busy: false, clientLoading: false, focus: null, caret: null }; states.set(root, state); }
+            const region = root.querySelector(':scope > [data-table-region]');
+            const content = region?.querySelector(':scope > [data-table-content]');
+            const overlay = region?.querySelector(':scope > [data-table-loading]');
+            if (!content || !overlay) continue;
+            const busy = content.hasAttribute('data-table-request') || root.dataset.externalLoading === 'true' || state.clientLoading;
+            if (busy && !state.busy && content.contains(document.activeElement)) {
+                state.focus = document.activeElement;
+                state.caret = typeof state.focus.selectionStart === 'number' ? [state.focus.selectionStart, state.focus.selectionEnd] : null;
+            }
+            if (root.getAttribute('aria-busy') !== String(busy)) root.setAttribute('aria-busy', String(busy));
+            if (content.inert !== busy) content.inert = busy;
+            if (overlay.hidden === busy) overlay.hidden = !busy;
+            if (!busy && state.busy) {
+                const focus = state.focus;
+                const caret = state.caret;
+                // Livewire morphing temporarily hides dropdown panels; wait for widget synchronization.
+                requestAnimationFrame(() => {
+                    if (!state.busy && focus?.isConnected && !focus.closest('[inert]') && [document.body, overlay].includes(document.activeElement)) {
+                        focus.focus({ preventScroll: true });
+                        if (caret && focus.setSelectionRange) focus.setSelectionRange(...caret);
+                    }
+                });
+                state.focus = null;
+                state.caret = null;
+            }
+            state.busy = busy;
+        }
+    }
+
+    document.addEventListener('table:loading', event => {
+        const { id, loading } = event.detail ?? {};
+        const root = document.getElementById(id);
+        if (!root?.matches('[data-sir-table]') || typeof loading !== 'boolean') return;
+        if (!states.has(root)) scan();
+        states.get(root).clientLoading = loading;
+        scan();
+    });
+    // Capture before delegated handlers so a backdrop cannot be bypassed by synthetic clicks.
+    for (const type of ['click', 'keydown']) document.addEventListener(type, event => {
+        if (!(event.target instanceof Element)) return;
+        const root = event.target.closest('[data-sir-table]');
+        if (root?.getAttribute('aria-busy') === 'true' && event.target.closest('[data-table-content]')) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+    }, true);
+    new MutationObserver(scan).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-table-request', 'data-external-loading', 'inert', 'hidden'] });
+    document.addEventListener('livewire:navigated', scan);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', scan, { once: true });
+    else scan();
+})();
+
 // One document-level owner supports plain Blade, Livewire morphs, and navigation.
 const owner = Symbol.for('sirius.ui.controls');
 
@@ -215,11 +278,23 @@ if (!window[avatarOwner]) {
     const closing = new Map();
     const rootSelector = '[data-sir-menu], [data-sir-dropdown]';
     const itemSelector = '[data-sir-nav-item]';
+    const clickDismissal = state => state.root.dataset.sirDropdownDismiss === 'click';
+    const rootFor = target => {
+        if (!(target instanceof Element)) return null;
+        const calendar = target.closest('[data-sir-date-calendar]');
+        const field = calendar && document.getElementById(calendar.dataset.sirDateCalendar);
+        return (field || target).closest(rootSelector);
+    };
     const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const set = (node, key, value) => { if (node.getAttribute(key) !== value) node.setAttribute(key, value); };
     const triggerFor = panel => panel.previousElementSibling;
     const items = panel => [...panel.querySelectorAll(itemSelector)].filter(item => item.closest('[data-sir-nav-list]') === panel);
-    const focusItem = (panel, last = false) => { const list = items(panel); list[last ? list.length - 1 : 0]?.focus({ preventScroll: true }); };
+    const focusItem = (panel, last = false) => {
+        const list = panel.getAttribute('role') === 'dialog'
+            ? [...panel.querySelectorAll('input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), a[href]')].filter(control => control.getClientRects().length && getComputedStyle(control).visibility !== 'hidden')
+            : items(panel);
+        list[last ? list.length - 1 : 0]?.focus({ preventScroll: true });
+    };
     const notify = (root, open) => root.dispatchEvent(new CustomEvent(open ? 'dropdown:open' : 'dropdown:close', { bubbles: true, detail: { id: root.id } }));
 
     function visibility(panel, open, animate = false) {
@@ -379,7 +454,7 @@ if (!window[avatarOwner]) {
     document.addEventListener('click', event => {
         const target = event.target instanceof Element ? event.target : null;
         if (!target) return;
-        const root = target.closest(rootSelector);
+        const root = rootFor(target);
         for (const state of roots.values()) if (state.dropdown && state.open && state.root !== root) close(state);
         const state = roots.get(root);
         if (!state) return;
@@ -405,7 +480,7 @@ if (!window[avatarOwner]) {
         const target = event.target instanceof Element ? event.target : null;
         const state = roots.get(target?.closest(rootSelector));
         if (!state) return;
-        if (target === state.trigger && event.key === 'Escape' && state.open) {
+        if (target === state.trigger && event.key === 'Escape' && state.open && !clickDismissal(state)) {
             event.preventDefault();
             event.stopImmediatePropagation();
             close(state, true);
@@ -413,10 +488,22 @@ if (!window[avatarOwner]) {
         }
         if (target === state.trigger && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
             event.preventDefault();
-            if (!state.trigger.disabled) open(state, event.key === 'ArrowUp');
+            if (!state.trigger.disabled) {
+                if (clickDismissal(state) && state.open && ['Enter', ' '].includes(event.key)) close(state, true);
+                else open(state, event.key === 'ArrowUp');
+            }
             return;
         }
         const item = target.closest(itemSelector);
+        if (!item && state.dropdown && state.open && state.panel.contains(target) && event.key === 'Escape') {
+            if (clickDismissal(state)) return;
+            if (target.closest('[data-sir-select]')?.querySelector('.ts-wrapper.dropdown-active')
+                || target.closest('[data-sir-datetime-picker]')?.querySelector('.flatpickr-calendar.open')) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            close(state, true);
+            return;
+        }
         if (!item) return;
         const panel = item.closest('[data-sir-nav-list]');
         const submenu = panel.classList.contains('sir-nav-submenu');
@@ -481,7 +568,10 @@ if (!window[avatarOwner]) {
     }, true);
 
     document.addEventListener('focusin', event => {
-        for (const state of roots.values()) if (state.dropdown && state.open && !state.root.contains(event.target)) close(state);
+        for (const state of roots.values()) {
+            if (clickDismissal(state) || state.root.closest('[data-sir-table][aria-busy="true"]')) continue;
+            if (state.dropdown && state.open && !state.root.contains(event.target) && rootFor(event.target) !== state.root) close(state);
+        }
     });
     function reposition() { for (const state of roots.values()) sync(state); }
     window.addEventListener('resize', reposition);
@@ -1026,7 +1116,7 @@ if (!window[avatarOwner]) {
     }
     function initialize(dialog) {
         if (states.has(dialog)) return;
-        states.set(dialog, { opener: null, closing: null });
+        states.set(dialog, { opener: null, closing: null, declared: dialog.dataset.open });
         dialog.addEventListener('cancel', event => {
             event.preventDefault();
             if (dialog.dataset.closeOnEscape === 'true') close(dialog, 'escape');
@@ -1092,6 +1182,13 @@ if (!window[avatarOwner]) {
         if (hooked || !window.Livewire) return;
         hooked = true;
         window.Livewire.hook('morph.updating', ({ el, toEl }) => {
+            if (el.matches?.(selector) && states.has(el)) {
+                const state = states.get(el);
+                const declared = toEl.dataset.open;
+                // Unchanged server markup must not undo an event-triggered open/close.
+                if (declared === state.declared) toEl.dataset.open = el.dataset.open;
+                state.declared = declared;
+            }
             if (el.matches?.(selector) && el === active && el.open) {
                 toEl.setAttribute('open', '');
                 if (states.get(el).closing) toEl.setAttribute('data-closing', 'true');
@@ -5637,6 +5734,7 @@ const locales = (function () { const module = { exports: {} }; const exports = m
 return module.exports.default; })();
 const selector = '[data-sir-date-display]';
 const states = new Map();
+let interactingCalendar = null;
 
 function parse(value, format, state) {
     if (!value) return null;
@@ -5717,7 +5815,7 @@ function initialize(input) {
         const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: config.timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(part => [part.type, part.value]));
         const now = new Date(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
         state.proxy = document.createElement('input');
-        const dialog = input.closest('dialog');
+        const dialog = input.closest('dialog, [data-sir-dropdown]');
         const dialogPosition = picker => {
             const calendar = picker.calendarContainer;
             const bounds = input.getBoundingClientRect();
@@ -5756,8 +5854,9 @@ function initialize(input) {
                 input.value = dates.length ? flatpickr.formatDate(dates[0], config.format, state.locale) : '';
                 state.display = input.value;
                 validity(state, !dates.length || allowed(dates[0], state));
+                // Focus before publishing: a Livewire change can make the Table inert immediately.
+                if (config.type === 'date') input.focus({ preventScroll: true });
                 publish(state, dates.length ? flatpickr.formatDate(dates[0], config.canonical) : '', true);
-                if (config.type === 'date') queueMicrotask(() => input.focus());
             },
         });
     }
@@ -5804,13 +5903,22 @@ document.addEventListener('input', event => {
     if (state && !event.isComposing) edit(state);
 }, true);
 document.addEventListener('compositionend', event => { const state = states.get(event.target); if (state) edit(state); }, true);
+
+document.addEventListener('pointerdown', event => {
+    const calendar = event.target.closest?.('[data-sir-date-calendar]');
+    interactingCalendar = calendar ? states.get(document.getElementById(calendar.dataset.sirDateCalendar)) : null;
+}, true);
+for (const type of ['pointerup', 'pointercancel']) document.addEventListener(type, () => {
+    const current = interactingCalendar;
+    setTimeout(() => { if (interactingCalendar === current) interactingCalendar = null; });
+}, true);
 document.addEventListener('change', event => {
     const state = states.get(event.target);
-    if (state) edit(state, true);
+    if (state && state !== interactingCalendar && !state.input.closest('[inert]')) edit(state, true);
 }, true);
 document.addEventListener('blur', event => {
     const state = states.get(event.target);
-    if (!state) return;
+    if (!state || state === interactingCalendar || state.input.closest('[inert]') || state.picker.calendarContainer.contains(event.relatedTarget)) return;
     edit(state, true);
     state.hidden.dispatchEvent(new FocusEvent('blur'));
     if (!state.picker.calendarContainer.contains(event.relatedTarget)) state.picker.close();
@@ -6634,21 +6742,35 @@ if (!window[key]) {
     const selector = '[data-sir-select]';
     const list = value => value == null || value === '' ? [] : (Array.isArray(value) ? value : [value]).map(String);
     const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+    const settings = ({ values, ...config }) => config;
     function status(state, message) {
         state.message = message;
         const target = state.root.closest('.sir-field')?.querySelector('[data-sir-label-status]');
         if (target && target.textContent !== message) target.textContent = message;
     }
     function records(source) {
-        return [...source.options].filter(o => o.value !== '').map(o => ({ value: o.value, label: o.textContent, disabled: o.disabled || o.parentElement.disabled === true, group: o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : '' }));
+        return [...source.options].filter(o => o.value !== '').map(o => ({ value: o.value, label: o.textContent, disabled: o.disabled || o.parentElement.disabled === true, group: o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : '', unresolved: o.hasAttribute('data-select-unresolved') }));
     }
     function add(state, rows) {
         for (const row of rows) {
+            if (row.unresolved && state.tom.options[row.value]) continue;
             if (row.group) state.tom.addOptionGroup(row.group, { value: row.group, label: row.group });
             const option = { ...row, optgroup: row.group || '' };
             if (state.tom.options[row.value]) state.tom.updateOption(row.value, option);
             else state.tom.addOption(option);
         }
+    }
+    function revealSearch(state) {
+        const tom = state.tom;
+        if (!state.config.multiple || !state.root.isConnected || tom.isInputHidden || document.activeElement !== tom.control_input) return;
+        const control = tom.control;
+        const bounds = control.getBoundingClientRect();
+        const input = tom.control_input.getBoundingClientRect();
+        const styles = getComputedStyle(control);
+        const left = bounds.left + control.clientLeft + parseFloat(styles.paddingLeft);
+        const right = bounds.left + control.clientLeft + control.clientWidth - parseFloat(styles.paddingRight);
+        if (input.right > right) control.scrollLeft += input.right - right;
+        else if (input.left < left) control.scrollLeft += input.left - left;
     }
     function write(state, emit = false) {
         const values = state.values;
@@ -6660,6 +6782,7 @@ if (!window[key]) {
         state.signature = JSON.stringify(records(state.source));
         state.clear.hidden = !state.config.clearable || values.length === 0;
         state.clear.disabled = state.source.disabled || state.source.hasAttribute('readonly');
+        queueMicrotask(() => revealSearch(state));
         if (emit) {
             state.model.dispatchEvent(new Event('input', { bubbles: true }));
             state.model.dispatchEvent(new Event('change', { bubbles: true }));
@@ -6775,7 +6898,7 @@ if (!window[key]) {
         const ui = root.querySelector('[data-select-ui]');
         const config = JSON.parse(root.dataset.selectConfig);
         let state = states.get(root);
-        if (state && (state.source !== source || state.model !== model || !same(state.config, config))) {
+        if (state && (state.source !== source || state.model !== model || !same(settings(state.config), settings(config)))) {
             const previous = !same(state.config.values, config.values) ? (config.multiple ? config.values : config.values[0] ?? null) : model.value;
             destroy(state);
             if (previous !== undefined) model.value = previous;
@@ -6803,7 +6926,7 @@ if (!window[key]) {
                     state.values = [...this.items]; write(state, true);
                 },
                 onType(query) { if (config.url) schedule(state, query); },
-                onFocus() { if (config.url && !state.clearing) schedule(state, this.control_input.value); },
+                onFocus() { queueMicrotask(() => revealSearch(state)); if (config.url && !state.clearing) schedule(state, this.control_input.value); },
                 onBlur() { model.dispatchEvent(new Event('blur')); },
             });
             tom.control_input.id = source.id + '-search';
@@ -6851,6 +6974,11 @@ if (!window[key]) {
                 if (!config.url) state.tom.clearOptions();
                 add(state, current);
                 state.tom.refreshOptions(false);
+            }
+            if (!same(state.config.values, config.values)) {
+                state.config.values = config.values;
+                state.initial = config.values;
+                set(state, config.values);
             }
         }
         sync(state);

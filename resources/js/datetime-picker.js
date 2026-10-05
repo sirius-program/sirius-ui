@@ -1,5 +1,6 @@
 const selector = '[data-sir-date-display]';
 const states = new Map();
+let interactingCalendar = null;
 
 function parse(value, format, state) {
     if (!value) return null;
@@ -80,7 +81,7 @@ function initialize(input) {
         const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: config.timezone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).map(part => [part.type, part.value]));
         const now = new Date(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour), Number(parts.minute), Number(parts.second));
         state.proxy = document.createElement('input');
-        const dialog = input.closest('dialog');
+        const dialog = input.closest('dialog, [data-sir-dropdown]');
         const dialogPosition = picker => {
             const calendar = picker.calendarContainer;
             const bounds = input.getBoundingClientRect();
@@ -119,8 +120,9 @@ function initialize(input) {
                 input.value = dates.length ? flatpickr.formatDate(dates[0], config.format, state.locale) : '';
                 state.display = input.value;
                 validity(state, !dates.length || allowed(dates[0], state));
+                // Focus before publishing: a Livewire change can make the Table inert immediately.
+                if (config.type === 'date') input.focus({ preventScroll: true });
                 publish(state, dates.length ? flatpickr.formatDate(dates[0], config.canonical) : '', true);
-                if (config.type === 'date') queueMicrotask(() => input.focus());
             },
         });
     }
@@ -167,13 +169,22 @@ document.addEventListener('input', event => {
     if (state && !event.isComposing) edit(state);
 }, true);
 document.addEventListener('compositionend', event => { const state = states.get(event.target); if (state) edit(state); }, true);
+
+document.addEventListener('pointerdown', event => {
+    const calendar = event.target.closest?.('[data-sir-date-calendar]');
+    interactingCalendar = calendar ? states.get(document.getElementById(calendar.dataset.sirDateCalendar)) : null;
+}, true);
+for (const type of ['pointerup', 'pointercancel']) document.addEventListener(type, () => {
+    const current = interactingCalendar;
+    setTimeout(() => { if (interactingCalendar === current) interactingCalendar = null; });
+}, true);
 document.addEventListener('change', event => {
     const state = states.get(event.target);
-    if (state) edit(state, true);
+    if (state && state !== interactingCalendar && !state.input.closest('[inert]')) edit(state, true);
 }, true);
 document.addEventListener('blur', event => {
     const state = states.get(event.target);
-    if (!state) return;
+    if (!state || state === interactingCalendar || state.input.closest('[inert]') || state.picker.calendarContainer.contains(event.relatedTarget)) return;
     edit(state, true);
     state.hidden.dispatchEvent(new FocusEvent('blur'));
     if (!state.picker.calendarContainer.contains(event.relatedTarget)) state.picker.close();

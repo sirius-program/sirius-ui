@@ -36,6 +36,12 @@ it('uses named slots for adornments and escapes strings and textarea content', f
     expect($html)->not->toContain('>default<', '<script>');
 });
 
+it('preserves native search semantics and its Livewire binding', function (): void {
+    $html = Blade::render('<x-sirius::input id="lookup" type="search" name="lookup" label="Search" wire:model.live.debounce.300ms="search" />');
+
+    expect($html)->toContain('type="search"', 'name="lookup"', 'wire:model.live.debounce.300ms="search"', 'for="lookup"');
+});
+
 it('renders an accessible non-submit password toggle using Blade Icons', function (): void {
     $html = Blade::render('<x-sirius::input id="secret" type="password" disabled show-label="Reveal secret" hide-label="Hide secret" />');
 

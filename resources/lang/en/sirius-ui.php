@@ -3,6 +3,26 @@
 declare(strict_types=1);
 
 return [
+    'table' => [
+        'record_label'  => 'data',
+        'search'        => 'Search',
+        'filters'       => 'Filters',
+        'reset_filters' => 'Reset filters',
+        'all'           => 'All',
+        'actions'       => 'Actions',
+        'summary'       => ':from–:to · :shown shown of :total :label',
+        'empty'         => 'No :label found.',
+        'per_page'      => 'Per page',
+        'pagination'    => 'Pagination',
+        'page'          => 'Page :number',
+        'back'          => 'Back',
+        'next'          => 'Next',
+        'ascending'     => 'ascending',
+        'descending'    => 'descending',
+        'sort_hint'     => 'Click to cycle ascending, descending, and unsorted. Shift + click to sort multiple columns.',
+        'sort_priority' => ':column: :direction (priority :priority)',
+        'loading'       => 'Loading…',
+    ],
     'breadcrumb' => ['label' => 'Breadcrumb'],
     'menu'       => ['label' => 'Navigation'],
     'popover'    => ['label' => 'More information'],

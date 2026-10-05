@@ -12,7 +12,8 @@
             "utils",
             "radix",
             "keyframe",
-            "slideover"
+            "slideover",
+            "sortable"
         ],
         "paths": []
     }

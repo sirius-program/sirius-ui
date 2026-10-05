@@ -25,7 +25,7 @@ it('renders named native selections with escaped labels and shared accessibility
 it('retains unknown selected IDs for remote label resolution', function (): void {
     $html = Blade::render('<x-sirius::select name="venue" value="bali" search-url="/options" wire:model.live="venue" />');
 
-    expect($html)->toContain('<option value="bali" selected>bali</option>', 'data-select-model', 'wire:model.live="venue"');
+    expect($html)->toContain('<option value="bali" data-select-unresolved selected>bali</option>', 'data-select-model', 'wire:model.live="venue"');
 });
 
 it('rejects invalid select configuration', function (string $props): void {

@@ -48,7 +48,7 @@
                 @if ($group !== '')</optgroup>@endif
             @endforeach
             @foreach (array_diff($values, array_column($options, 'value')) as $selected)
-                <option value="{{ $selected }}" selected>{{ $selected }}</option>
+                <option value="{{ $selected }}" data-select-unresolved selected>{{ $selected }}</option>
             @endforeach
         </select>
         <span hidden data-select-model @if ($bindings->isNotEmpty()) wire:ignore @endif {{ $bindings }}></span>

@@ -246,7 +246,7 @@
 
 /* Scoped widget overrides use the same tokens as native package fields. */
 .sir-date-calendar.flatpickr-calendar { background: var(--sir-color-surface); color: var(--sir-color-text); border: 1px solid var(--sir-color-border); box-shadow: 0 4px 16px #0002; border-radius: var(--sir-radius); }
-dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
+dialog .sir-date-calendar.flatpickr-calendar, [data-sir-dropdown] .sir-date-calendar.flatpickr-calendar { position: fixed; }
 .sir-date-calendar .flatpickr-months { border-start-start-radius: inherit; border-start-end-radius: inherit; overflow: hidden; }
 .sir-date-calendar:not(.hasTime) .flatpickr-innerContainer { border-end-start-radius: inherit; border-end-end-radius: inherit; overflow: hidden; }
 .sir-date-calendar .flatpickr-time { border-end-start-radius: inherit; border-end-end-radius: inherit; }
@@ -275,8 +275,12 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 
 [data-select-source][hidden] { display: none !important; }
 [data-select-ui] .ts-wrapper { padding: 0; border: 0; font: inherit; }
-[data-select-ui] .ts-control { min-height: calc(1lh + 2 * var(--sir-control-padding-y)); padding: var(--sir-control-padding-y) var(--sir-control-padding-x); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface) !important; color: var(--sir-color-text); box-shadow: none; font: inherit; }
+[data-select-ui] .ts-control { flex-wrap: nowrap; align-items: center; min-height: calc(1lh + 2 * var(--sir-control-padding-y)); padding: var(--sir-control-padding-y) var(--sir-control-padding-x); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface) !important; color: var(--sir-color-text); box-shadow: none; font: inherit; }
 [data-select-ui] .ts-control input { color: var(--sir-color-text); font: inherit; }
+[data-select-ui] .ts-wrapper.single .ts-control input { flex: 1 1 0%; min-width: 1ch; width: 0; }
+[data-select-ui] .ts-wrapper.single .ts-control > .item { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-select-ui] .ts-wrapper.multi .ts-control { overflow-x: auto; scrollbar-width: none; }
+[data-select-ui] .ts-wrapper.multi .ts-control > .item { flex: 0 0 auto; white-space: nowrap; margin-bottom: 0; }
 [data-select-ui] .ts-wrapper.focus .ts-control { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
 [data-sir-select]:has([aria-invalid="true"]) .ts-control { border-color: var(--sir-color-danger); }
 [data-select-ui] .ts-dropdown { background: var(--sir-color-surface); color: var(--sir-color-text); border-color: var(--sir-color-border); border-radius: var(--sir-radius); font: inherit; z-index: 30; }
@@ -294,8 +298,8 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 .sir-label-status:empty { display: none; }
 .sir-label > .sir-label-status { float: inline-end; }
 [data-sir-select]:has([data-select-ui] .ts-wrapper) > [data-select-source] { display: none !important; }
-.sir-select-shell { border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); gap: 0; align-items: stretch; }
-.sir-select-shell > .ts-wrapper { flex: 1 1 0%; min-width: 0; }
+.sir-select-shell { position: relative; border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); gap: 0; align-items: stretch; }
+.sir-select-shell > .ts-wrapper { position: static; flex: 1 1 0%; min-width: 0; }
 .sir-select-shell .ts-control { border: 0; }
 .sir-select-shell:focus-within { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
 .sir-select-shell .ts-wrapper.focus .ts-control { outline: none; }
@@ -540,3 +544,29 @@ dialog .sir-date-calendar.flatpickr-calendar { position: fixed; }
 @media (prefers-reduced-motion: reduce) {
     .sir-dialog[open], .sir-dialog[open]::backdrop { animation: none; }
 }
+
+.sir-table { position: relative; border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); color: var(--sir-color-text); background: var(--sir-color-surface); min-width: 0; }
+.sir-table-toolbar { display: flex; gap: .5rem; align-items: center; padding: .75rem; border-bottom: 1px solid var(--sir-color-border); }
+.sir-table-results { position: relative; isolation: isolate; border-radius: 0 0 var(--sir-radius) var(--sir-radius); }
+.sir-table-search { flex: 1; min-width: 0; }
+.sir-table-search .sir-control { width: 100%; }
+.sir-table-filters > .sir-dropdown-trigger > .sir-icon:last-child { display: none; }
+.sir-table-filters > .sir-dropdown-panel { width: min(calc(16rem + 50px + .5rem + 2px), calc(100vw - 1rem)); min-width: 0; }
+.sir-table-filter-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; padding: .75rem; min-width: 0; }
+.sir-table-filter-fields > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: .5rem; min-width: 0; }
+.sir-table-scroll { overflow: auto; }
+.sir-table table { width: 100%; border-collapse: collapse; text-align: start; font-size: .875rem; }
+.sir-table th, .sir-table td { padding: .75rem; border-bottom: 1px solid var(--sir-color-border); border-inline-end: 1px solid var(--sir-color-border); text-align: start; }
+.sir-table th:last-child, .sir-table td:last-child { border-inline-end: 0; }
+.sir-table th { background: color-mix(in oklch, var(--sir-color-border), transparent 80%); font-weight: 600; white-space: nowrap; }
+.sir-table th button { display: flex; gap: .5rem; width: 100%; align-items: center; cursor: pointer; }
+.sir-table th button:focus-visible, .sir-table-scroll:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: -2px; }
+.sir-table-actions { display: flex; gap: .375rem; white-space: nowrap; }
+.sir-table .sir-table-empty { text-align: center; padding: 2rem; color: var(--sir-color-muted); }
+.sir-table-footer { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; padding: .75rem; font-size: .875rem; }
+.sir-table-page-size { display: flex; gap: .5rem; align-items: center; }
+.sir-table-page-size .sir-control { width: auto; }
+.sir-table-pagination { display: flex; justify-content: end; flex-wrap: wrap; align-items: center; gap: .125rem; }
+.sir-table-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: .5rem; border-radius: inherit; background: color-mix(in oklch, var(--sir-color-surface), transparent 15%); backdrop-filter: blur(2px); cursor: wait; }
+.sir-table-loading[hidden] { display: none !important; }
+@media (max-width: 640px) { .sir-table-footer { grid-template-columns: 1fr; } .sir-table-pagination { justify-content: start; } }

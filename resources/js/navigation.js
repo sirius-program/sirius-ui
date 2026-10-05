@@ -6,11 +6,23 @@
     const closing = new Map();
     const rootSelector = '[data-sir-menu], [data-sir-dropdown]';
     const itemSelector = '[data-sir-nav-item]';
+    const clickDismissal = state => state.root.dataset.sirDropdownDismiss === 'click';
+    const rootFor = target => {
+        if (!(target instanceof Element)) return null;
+        const calendar = target.closest('[data-sir-date-calendar]');
+        const field = calendar && document.getElementById(calendar.dataset.sirDateCalendar);
+        return (field || target).closest(rootSelector);
+    };
     const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const set = (node, key, value) => { if (node.getAttribute(key) !== value) node.setAttribute(key, value); };
     const triggerFor = panel => panel.previousElementSibling;
     const items = panel => [...panel.querySelectorAll(itemSelector)].filter(item => item.closest('[data-sir-nav-list]') === panel);
-    const focusItem = (panel, last = false) => { const list = items(panel); list[last ? list.length - 1 : 0]?.focus({ preventScroll: true }); };
+    const focusItem = (panel, last = false) => {
+        const list = panel.getAttribute('role') === 'dialog'
+            ? [...panel.querySelectorAll('input:not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled), a[href]')].filter(control => control.getClientRects().length && getComputedStyle(control).visibility !== 'hidden')
+            : items(panel);
+        list[last ? list.length - 1 : 0]?.focus({ preventScroll: true });
+    };
     const notify = (root, open) => root.dispatchEvent(new CustomEvent(open ? 'dropdown:open' : 'dropdown:close', { bubbles: true, detail: { id: root.id } }));
 
     function visibility(panel, open, animate = false) {
@@ -170,7 +182,7 @@
     document.addEventListener('click', event => {
         const target = event.target instanceof Element ? event.target : null;
         if (!target) return;
-        const root = target.closest(rootSelector);
+        const root = rootFor(target);
         for (const state of roots.values()) if (state.dropdown && state.open && state.root !== root) close(state);
         const state = roots.get(root);
         if (!state) return;
@@ -196,7 +208,7 @@
         const target = event.target instanceof Element ? event.target : null;
         const state = roots.get(target?.closest(rootSelector));
         if (!state) return;
-        if (target === state.trigger && event.key === 'Escape' && state.open) {
+        if (target === state.trigger && event.key === 'Escape' && state.open && !clickDismissal(state)) {
             event.preventDefault();
             event.stopImmediatePropagation();
             close(state, true);
@@ -204,10 +216,22 @@
         }
         if (target === state.trigger && ['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
             event.preventDefault();
-            if (!state.trigger.disabled) open(state, event.key === 'ArrowUp');
+            if (!state.trigger.disabled) {
+                if (clickDismissal(state) && state.open && ['Enter', ' '].includes(event.key)) close(state, true);
+                else open(state, event.key === 'ArrowUp');
+            }
             return;
         }
         const item = target.closest(itemSelector);
+        if (!item && state.dropdown && state.open && state.panel.contains(target) && event.key === 'Escape') {
+            if (clickDismissal(state)) return;
+            if (target.closest('[data-sir-select]')?.querySelector('.ts-wrapper.dropdown-active')
+                || target.closest('[data-sir-datetime-picker]')?.querySelector('.flatpickr-calendar.open')) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            close(state, true);
+            return;
+        }
         if (!item) return;
         const panel = item.closest('[data-sir-nav-list]');
         const submenu = panel.classList.contains('sir-nav-submenu');
@@ -272,7 +296,10 @@
     }, true);
 
     document.addEventListener('focusin', event => {
-        for (const state of roots.values()) if (state.dropdown && state.open && !state.root.contains(event.target)) close(state);
+        for (const state of roots.values()) {
+            if (clickDismissal(state) || state.root.closest('[data-sir-table][aria-busy="true"]')) continue;
+            if (state.dropdown && state.open && !state.root.contains(event.target) && rootFor(event.target) !== state.root) close(state);
+        }
     });
     function reposition() { for (const state of roots.values()) sync(state); }
     window.addEventListener('resize', reposition);

@@ -121,7 +121,7 @@
     }
     function initialize(dialog) {
         if (states.has(dialog)) return;
-        states.set(dialog, { opener: null, closing: null });
+        states.set(dialog, { opener: null, closing: null, declared: dialog.dataset.open });
         dialog.addEventListener('cancel', event => {
             event.preventDefault();
             if (dialog.dataset.closeOnEscape === 'true') close(dialog, 'escape');
@@ -187,6 +187,13 @@
         if (hooked || !window.Livewire) return;
         hooked = true;
         window.Livewire.hook('morph.updating', ({ el, toEl }) => {
+            if (el.matches?.(selector) && states.has(el)) {
+                const state = states.get(el);
+                const declared = toEl.dataset.open;
+                // Unchanged server markup must not undo an event-triggered open/close.
+                if (declared === state.declared) toEl.dataset.open = el.dataset.open;
+                state.declared = declared;
+            }
             if (el.matches?.(selector) && el === active && el.open) {
                 toEl.setAttribute('open', '');
                 if (states.get(el).closing) toEl.setAttribute('data-closing', 'true');

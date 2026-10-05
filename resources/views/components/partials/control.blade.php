@@ -23,8 +23,8 @@
             'aria-describedby' => trim(($attributes->get('aria-describedby') ?? '').' '.($groupContext['description'] ?? '')),
         ]);
     }
-    if ($kind === 'input' && !in_array($type, ['text', 'number', 'password'], true)) {
-        throw new InvalidArgumentException('Input type must be text, number, or password.');
+    if ($kind === 'input' && !in_array($type, ['text', 'search', 'number', 'password'], true)) {
+        throw new InvalidArgumentException('Input type must be text, search, number, or password.');
     }
     if ($kind === 'textarea' && !in_array($resize, ['none', 'vertical', 'horizontal', 'both'], true)) {
         throw new InvalidArgumentException('Textarea resize must be none, vertical, horizontal, or both.');

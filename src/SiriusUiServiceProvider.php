@@ -37,6 +37,11 @@ final class SiriusUiServiceProvider extends ServiceProvider
         Blade::component('sirius::components.dialog', 'sirius-internal-dialog');
         Blade::component('sirius::components.navigation-item', 'sirius-internal-navigation-item');
         Blade::component('sirius::components.floating', 'sirius-internal-floating');
+        Blade::component('sirius::components.button', 'sirius-internal-button');
+        Blade::component('sirius::components.dropdown', 'sirius-internal-dropdown');
+        Blade::component('sirius::components.input', 'sirius-internal-input');
+        Blade::component('sirius::components.select', 'sirius-internal-select');
+        Blade::component('sirius::components.datetime-picker', 'sirius-internal-datetime-picker');
 
         Livewire::addNamespace(
             namespace: $livewireNamespace,
