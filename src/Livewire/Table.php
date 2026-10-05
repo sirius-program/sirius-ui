@@ -44,6 +44,10 @@ abstract class Table extends Component
 
     public int $page = 1;
 
+    /** @var list<int|string> */
+    #[Locked]
+    public array $selectedIds = [];
+
     /** @return Builder<TModel>|Collection<array-key, *> */
     abstract protected function query(): Builder|Collection;
 
@@ -57,6 +61,11 @@ abstract class Table extends Component
     }
 
     protected function rowActionsView(): ?string
+    {
+        return null;
+    }
+
+    protected function bulkActionsView(): ?string
     {
         return null;
     }
@@ -94,6 +103,9 @@ abstract class Table extends Component
         if ($property === 'search' || $property === 'filters' || str_starts_with($property, 'filters.') || $property === 'perPage') {
             $this->page = 1;
         }
+        if ($property === 'search' || $property === 'filters' || str_starts_with($property, 'filters.')) {
+            $this->clearSelection();
+        }
     }
 
     public function resetFilters(): void
@@ -103,6 +115,54 @@ abstract class Table extends Component
             $this->filters[$filter->key] = $filter->default;
         }
         $this->page = 1;
+        $this->clearSelection();
+    }
+
+    public function toggleSelection(int|string $id): void
+    {
+        abort_unless($this->bulkActionsView() !== null && !$this->loading, 422);
+        $keys = $this->tableData()['recordKeys'];
+        $matches = array_values(array_filter($keys, static fn (int|string $key): bool => (string) $key === (string) $id));
+        abort_unless(count($matches) === 1, 422);
+        $key = $matches[0];
+        if (in_array($key, $this->selectedIds, true)) {
+            $this->removeSelection([$key]);
+        } else {
+            $this->selectedIds[] = $key;
+        }
+    }
+
+    public function togglePageSelection(): void
+    {
+        abort_unless($this->bulkActionsView() !== null && !$this->loading, 422);
+        $keys = $this->tableData()['recordKeys'];
+        if ($keys !== [] && array_diff($keys, $this->selectedIds) === []) {
+            $this->removeSelection($keys);
+        } else {
+            foreach ($keys as $key) {
+                if (!in_array($key, $this->selectedIds, true)) {
+                    $this->selectedIds[] = $key;
+                }
+            }
+        }
+    }
+
+    #[On('table:clear-selection.{tableId}')]
+    public function clearSelection(): void
+    {
+        $this->selectedIds = [];
+    }
+
+    /** @param array<array-key, mixed> $ids */
+    #[On('table:remove-selection.{tableId}')]
+    public function removeSelection(array $ids): void
+    {
+        foreach ($ids as $id) {
+            abort_unless(is_int($id) || (is_string($id) && $id !== ''), 422);
+        }
+        $remove = array_map(strval(...), $ids);
+        $this->selectedIds = array_values(array_filter($this->selectedIds,
+            static fn (int|string $key): bool => !in_array((string) $key, $remove, true)));
     }
 
     public function sortBy(string $key, bool $additive = false): void
@@ -135,6 +195,23 @@ abstract class Table extends Component
 
     public function render(): View
     {
+        $data = $this->tableData();
+        $pageSelected = count(array_intersect($data['recordKeys'], $this->selectedIds));
+
+        return view('sirius::livewire.table', [
+            ...$data,
+            'rowActionsView'  => $this->rowActionsView(),
+            'bulkActionsView' => $this->bulkActionsView(),
+            'pageSelected'    => $pageSelected,
+            'entityLabel'     => $this->recordLabel ?? __('sirius::sirius-ui.table.record_label'),
+        ]);
+    }
+
+    /**
+     * @return array{columns: array<string, Column>, filterDefinitions: array<string, Filter>, pageSizes: non-empty-list<positive-int>, records: LengthAwarePaginator<int, *>, recordKeys: list<int|string>, pages: list<int|null>, sortPositions: array<string, int>}
+     */
+    private function tableData(): array
+    {
         $columns = $this->definitions($this->columns());
         if ($columns === []) {
             throw new InvalidArgumentException('Table requires at least one column.');
@@ -152,17 +229,15 @@ abstract class Table extends Component
             ? $this->collectionRecords($source, $columns, $filterDefinitions, $sorts)
             : $this->databaseRecords(clone $source, $columns, $filterDefinitions, $sorts);
 
-        return view('sirius::livewire.table', [
+        return [
             'columns'           => $columns,
             'filterDefinitions' => $filterDefinitions,
             'pageSizes'         => $sizes,
             'records'           => $records,
-            'recordKeys'        => $records->getCollection()->map(fn (array|object $record): int|string => $this->recordKey($record))->values()->all(),
+            'recordKeys'        => array_values($records->getCollection()->map(fn (array|object $record): int|string => $this->recordKey($record))->all()),
             'pages'             => $this->pageNumbers($records),
             'sortPositions'     => array_flip(array_keys($sorts)),
-            'rowActionsView'    => $this->rowActionsView(),
-            'entityLabel'       => $this->recordLabel ?? __('sirius::sirius-ui.table.record_label'),
-        ]);
+        ];
     }
 
     /**

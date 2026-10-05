@@ -40,6 +40,7 @@ final class SiriusUiServiceProvider extends ServiceProvider
         Blade::component('sirius::components.button', 'sirius-internal-button');
         Blade::component('sirius::components.dropdown', 'sirius-internal-dropdown');
         Blade::component('sirius::components.input', 'sirius-internal-input');
+        Blade::component('sirius::components.checkbox', 'sirius-internal-checkbox');
         Blade::component('sirius::components.select', 'sirius-internal-select');
         Blade::component('sirius::components.datetime-picker', 'sirius-internal-datetime-picker');
 
