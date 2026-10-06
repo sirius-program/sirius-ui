@@ -13,7 +13,8 @@
             "radix",
             "keyframe",
             "slideover",
-            "sortable"
+            "sortable",
+            "selectable"
         ],
         "paths": []
     }

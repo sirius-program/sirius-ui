@@ -3,6 +3,8 @@
 @import "../../node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
 @import "../../node_modules/filepond-plugin-file-poster/dist/filepond-plugin-file-poster.min.css";
 @import "../../node_modules/flatpickr/dist/flatpickr.css";
+@import "../../node_modules/fullcalendar/skeleton.css";
+@import "../../node_modules/fullcalendar/themes/monarch/theme.css";
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 
@@ -21,6 +23,69 @@
     --sir-control-padding-x: 0.75rem;
     --sir-control-padding-y: 0.5rem;
 }
+
+.sir-calendar {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--sir-radius);
+    min-width: 0;
+}
+.sir-calendar, .sir-calendar-popover {
+    color: var(--sir-color-text);
+    --fc-monarch-primary: var(--sir-color-primary);
+    --fc-monarch-primary-foreground: var(--sir-color-on-primary);
+    --fc-monarch-primary-over: var(--sir-color-primary-hover);
+    --fc-monarch-primary-down: var(--sir-color-primary-hover);
+    --fc-monarch-secondary: var(--sir-color-surface);
+    --fc-monarch-secondary-foreground: var(--sir-color-text);
+    --fc-monarch-secondary-over: color-mix(in oklch, var(--sir-color-border), transparent 70%);
+    --fc-monarch-secondary-down: var(--sir-color-border);
+    --fc-monarch-tertiary: var(--sir-color-primary);
+    --fc-monarch-tertiary-foreground: var(--sir-color-on-primary);
+    --fc-monarch-tertiary-over: var(--sir-color-primary-hover);
+    --fc-monarch-tertiary-down: var(--sir-color-primary-hover);
+    --fc-monarch-event: var(--sir-color-primary);
+    --fc-monarch-event-contrast: var(--sir-color-on-primary);
+    --fc-monarch-highlight: color-mix(in oklch, var(--sir-color-primary), transparent 85%);
+    --fc-monarch-now: var(--sir-color-danger);
+    --fc-monarch-selected: var(--sir-color-primary);
+    --fc-monarch-selected-foreground: var(--sir-color-on-primary);
+    --fc-monarch-selected-over: var(--sir-color-primary-hover);
+    --fc-monarch-selected-down: var(--sir-color-primary-hover);
+    --fc-monarch-outline: var(--sir-focus-ring);
+    --fc-monarch-popover: var(--sir-color-surface);
+    --fc-monarch-background: var(--sir-color-surface);
+    --fc-monarch-foreground: var(--sir-color-text);
+    --fc-monarch-faint-foreground: var(--sir-color-muted);
+    --fc-monarch-muted-foreground: var(--sir-color-muted);
+    --fc-monarch-border: var(--sir-color-border);
+    --fc-monarch-strong-border: var(--sir-color-border);
+    --fc-monarch-faint: color-mix(in oklch, var(--sir-color-border), transparent 90%);
+    --fc-monarch-muted: color-mix(in oklch, var(--sir-color-border), transparent 80%);
+    --fc-monarch-strong: color-mix(in oklch, var(--sir-color-border), transparent 65%);
+    --fc-monarch-stronger: color-mix(in oklch, var(--sir-color-border), transparent 50%);
+    --fc-monarch-strongest: var(--sir-color-border);
+}
+.sir-calendar[aria-busy="true"], .sir-calendar[data-calendar-height-lock] { height: var(--sir-calendar-loading-height, auto); overflow: clip; }
+.sir-calendar [data-calendar-ui] { position: relative; z-index: 0; overflow: clip; }
+.sir-calendar-popover { max-width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); border: 1px solid var(--sir-color-border); border-radius: var(--sir-radius); background: var(--sir-color-surface); color: var(--sir-color-text); }
+.sir-calendar-popover [data-calendar-popover-header] { position: relative; flex-shrink: 0; padding: .25rem 2.75rem; border-bottom: 1px solid var(--sir-color-border); }
+.sir-calendar-popover [data-calendar-popover-header] > button { top: 50%; transform: translateY(-50%); border-radius: var(--sir-radius); }
+.sir-calendar-popover [data-calendar-popover-body] { min-height: 0; overflow: auto; padding: .75rem; }
+.sir-calendar-popover [data-calendar-popover-body] > div { padding: 0; }
+/* FullCalendar 7 Monarch resize handles stay within the event's scroll bounds. */
+:is(.sir-calendar, .sir-calendar-popover) .fc-monarch-11a { inset-inline-start: 0; }
+:is(.sir-calendar, .sir-calendar-popover) .fc-monarch-Tuc { inset-inline-end: 0; }
+:is(.sir-calendar, .sir-calendar-popover) .fc-monarch-YDC { top: 0; }
+:is(.sir-calendar, .sir-calendar-popover) .fc-monarch-fJL { bottom: 0; }
+.sir-calendar .sir-calendar-toolbar { flex-wrap: wrap; gap: .5rem; }
+.sir-calendar .sir-calendar-day-header-divider { border-bottom: 1px solid var(--sir-color-border); }
+.sir-calendar button { border-radius: var(--sir-radius); }
+.sir-calendar :focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 2px; }
+.sir-calendar [hidden] { display: none !important; }
+.sir-calendar-feedback { display: flex; align-items: center; gap: .75rem; margin-top: .75rem; font-size: .875rem; color: var(--sir-color-muted); }
+.sir-calendar-feedback p:empty { display: none; }
+@media (prefers-reduced-motion: reduce) { .sir-calendar * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 
 [data-slider-source][data-slider-enhanced="true"],
 [data-sir-slider]:has(> [data-slider-ui] .sir-slider-track) > [data-slider-source] { display: none !important; }
@@ -570,6 +635,6 @@ dialog .sir-date-calendar.flatpickr-calendar, [data-sir-dropdown] .sir-date-cale
 .sir-table-page-size { display: flex; gap: .5rem; align-items: center; }
 .sir-table-page-size .sir-control { width: auto; }
 .sir-table-pagination { display: flex; justify-content: end; flex-wrap: wrap; align-items: center; gap: .125rem; }
-.sir-table-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: .5rem; border-radius: inherit; background: color-mix(in oklch, var(--sir-color-surface), transparent 15%); backdrop-filter: blur(2px); cursor: wait; }
-.sir-table-loading[hidden] { display: none !important; }
+.sir-table-loading, .sir-calendar-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: .5rem; border-radius: inherit; background: color-mix(in oklch, var(--sir-color-surface), transparent 15%); backdrop-filter: blur(2px); cursor: wait; }
+.sir-table-loading[hidden], .sir-calendar-loading[hidden] { display: none !important; }
 @media (max-width: 640px) { .sir-table-footer { grid-template-columns: 1fr; } .sir-table-pagination { justify-content: start; } }

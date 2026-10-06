@@ -3,6 +3,24 @@
 declare(strict_types=1);
 
 return [
+    'calendar' => [
+        'label'        => 'Schedule',
+        'prev'         => 'Previous',
+        'next'         => 'Next',
+        'today'        => 'Today',
+        'dayGridMonth' => 'Month',
+        'timeGridWeek' => 'Week',
+        'timeGridDay'  => 'Day',
+        'listWeek'     => 'Agenda',
+        'all_day'      => 'All day',
+        'empty'        => 'No events in this range.',
+        'loading'      => 'Loading schedule…',
+        'saving'       => 'Saving schedule…',
+        'saved'        => 'Schedule updated.',
+        'rejected'     => 'The change was not saved. The previous schedule was restored.',
+        'error'        => 'Unable to load the schedule. Try again.',
+        'retry'        => 'Retry',
+    ],
     'table' => [
         'record_label'   => 'data',
         'search'         => 'Search',

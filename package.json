@@ -23,12 +23,14 @@
         "filepond-plugin-file-validate-type": "1.2.9",
         "filepond-plugin-image-preview": "4.6.12",
         "flatpickr": "4.6.13",
+        "fullcalendar": "7.1.1",
         "libphonenumber-js": "1.13.13",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "react-hotkeys-hook": "5.1.0",
         "sass": "1.93.2",
         "tailwindcss": "^4.1.0",
+        "temporal-polyfill": "1.0.5",
         "tom-select": "2.6.2"
     }
 }
