@@ -24,6 +24,16 @@
     --sir-control-padding-y: 0.5rem;
 }
 
+.sir-chart { min-width: 0; color: var(--sir-color-text); }
+.sir-chart-stage { position: relative; width: 100%; max-width: 100%; height: 320px; border-radius: var(--sir-radius); }
+.sir-chart-stage canvas { max-width: 100%; }
+.sir-chart-empty { position: absolute; inset: 0; display: grid; place-content: center; color: var(--sir-color-muted); }
+.sir-chart [hidden] { display: none !important; }
+.sir-chart-description, .sir-chart-feedback { margin-top: .75rem; color: var(--sir-color-muted); font-size: .875rem; }
+.sir-chart-feedback { display: flex; align-items: center; gap: .75rem; }
+.sir-chart-feedback p:empty { display: none; }
+.sir-chart-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: .5rem; border-radius: inherit; background: color-mix(in oklch, var(--sir-color-surface), transparent 15%); backdrop-filter: blur(2px); cursor: wait; }
+
 .sir-calendar {
     position: relative;
     isolation: isolate;

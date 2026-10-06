@@ -3,6 +3,14 @@
 declare(strict_types=1);
 
 return [
+    'chart' => [
+        'label'    => 'Chart',
+        'fallback' => 'Read the accompanying description or data table for these values.',
+        'empty'    => 'No chart data.',
+        'loading'  => 'Loading chart…',
+        'error'    => 'Unable to display the chart. Try again.',
+        'retry'    => 'Retry',
+    ],
     'calendar' => [
         'label'        => 'Schedule',
         'prev'         => 'Previous',
