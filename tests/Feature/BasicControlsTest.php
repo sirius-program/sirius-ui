@@ -8,6 +8,15 @@ use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
 use Sirius\Ui\SiriusUiServiceProvider;
 
+it('uses translated password labels unless the caller provides them', function (): void {
+    app('translator')->addLines(['sirius-ui.input.show_password' => 'Tampilkan', 'sirius-ui.input.hide_password' => 'Sembunyikan'], 'id', 'sirius');
+    app()->setLocale('id');
+    $html = Blade::render('<x-sirius::input type="password" />');
+    expect($html)->toContain('data-show-label="Tampilkan"', 'data-hide-label="Sembunyikan"');
+    $custom = Blade::render('<x-sirius::input type="password" show-label="Reveal" hide-label="Conceal" />');
+    expect($custom)->toContain('data-show-label="Reveal"', 'data-hide-label="Conceal"');
+});
+
 it('generates a five character control ID and connects its label helper errors and password toggle', function (string $kind): void {
     $errors = (new ViewErrorBag)->put('default', new MessageBag(['sample' => ['Invalid sample']]));
     $html = Blade::render('<x-sirius::' . $kind . ' name="sample" label="Sample" helper="Help" :errors="$errors" ' . ($kind === 'input' ? 'type="password"' : '') . ' />', ['errors' => $errors]);

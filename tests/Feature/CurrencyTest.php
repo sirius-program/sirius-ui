@@ -7,6 +7,25 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
 
+it('passes consumer translated validity messages to the currency widget', function (): void {
+    app('translator')->addLines(['sirius-ui.currency.precision' => 'Maksimal :precision desimal.', 'sirius-ui.currency.min' => 'Minimal :min.'], 'id', 'sirius');
+    app()->setLocale('id');
+    $html = Blade::render('<x-sirius::currency min="5" :precision="3" />');
+    $document = new DOMDocument;
+    @$document->loadHTML($html);
+    $input = $document->getElementsByTagName('input')->item(0);
+    if (!$input instanceof DOMElement) {
+        throw new RuntimeException('Currency must render its display input.');
+    }
+    $messages = json_decode($input->getAttribute('data-currency-messages'), true, 512, JSON_THROW_ON_ERROR);
+    if (!is_array($messages)) {
+        throw new RuntimeException('Currency messages must be a JSON object.');
+    }
+
+    expect($messages['precision'])->toBe('Maksimal :precision desimal.');
+    expect($messages['min'])->toBe('Minimal :min.');
+});
+
 it('routes currency bindings to the canonical input and accessible attributes to the display', function (): void {
     $errors = (new ViewErrorBag)->put('billing', new MessageBag(['invoice.amount' => ['Invalid amount.']]));
     $html = Blade::render('<x-sirius::currency id="amount" name="invoice[amount]" wire:model.blur.live="invoice.amount" label="Amount" helper="USD" :errors="$errors" error-bag="billing" required readonly min="0" max="99999999999999999999.99" maxlength="40" data-test="amount" x-on:focus="focused = true" form="invoice" prefix="$" value="1234.50" />', ['errors' => $errors]);

@@ -45,7 +45,7 @@ arch('class-backed Blade adapters extend the framework component without queryin
 it('keeps source declarations in their PSR-4 location', function (string $class): void {
     expect(class_exists($class) || interface_exists($class) || trait_exists($class))->toBeTrue();
 })->with(function (): iterable {
-    foreach (new Finder()->files()->in(__DIR__ . '/../../src')->name('*.php') as $file) {
+    foreach ((new Finder)->files()->in(__DIR__ . '/../../src')->name('*.php') as $file) {
         yield $file->getRelativePathname() => [
             'Sirius\\Ui\\' . str_replace(['/', '\\', '.php'], ['\\', '\\', ''], $file->getRelativePathname()),
         ];

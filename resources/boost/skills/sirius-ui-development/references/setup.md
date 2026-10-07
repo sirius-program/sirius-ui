@@ -37,6 +37,10 @@ Currency global thousands_separator, decimal_separator and precision default to 
 
 UI translations: sirius::sirius-ui.{component}.{key}, stored in resources/lang/{locale}/sirius-ui.php. Consumers override lang/vendor/sirius/{locale}/sirius-ui.php. Validation messages: sirius::validation.* in validation.php. JavaScript receives translated strings from Blade. Dialog, Alert, Slideover and Toast share dialog.close. Richtext has no locale prop.
 
+Currency validity text uses the currency group with :precision, :min and :max tokens. Datetime Picker validity, Clear, and its fallback accessible name use datetime-picker. These UI strings follow the application's translation locale; the picker locale prop separately chooses the calendar's month/day names.
+
+Password toggle labels use input.show_password/hide_password. Phone country labels and client feedback use the phone group. Explicit show-label/hide-label and country-label/invalid-message props override those translations.
+
 ## Themes and icons
 
 Load overrides after Sirius CSS. .dark activates the dark theme; follow the application's theme persistence. Inspect resources/css/sirius.css for available --sir-* tokens and per-variant tone styles. Example in recipes.md. --sir-color-primary is used by interactive widgets; semantic button/badge tones have their own rules, so verify the intended component rather than assuming one token changes all variants.

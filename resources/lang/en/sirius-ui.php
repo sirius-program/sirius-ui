@@ -3,6 +3,29 @@
 declare(strict_types=1);
 
 return [
+    'input' => [
+        'show_password' => 'Show',
+        'hide_password' => 'Hide',
+    ],
+    'phone' => [
+        'country_label' => 'Country calling code',
+        'invalid'       => 'Enter a valid phone number for an allowed country.',
+        'requires_js'   => 'JavaScript is required to submit this phone field in international format.',
+    ],
+    'currency' => [
+        'incomplete' => 'Complete the amount.',
+        'invalid'    => 'Enter a valid decimal amount.',
+        'negative'   => 'Negative amounts are not allowed.',
+        'precision'  => 'Use at most :precision decimal places.',
+        'min'        => 'The amount must be at least :min.',
+        'max'        => 'The amount must not exceed :max.',
+    ],
+    'datetime-picker' => [
+        'clear'              => 'Clear',
+        'invalid'            => 'Enter an available date or time in the displayed format.',
+        'unsupported_locale' => 'Unsupported datetime picker locale.',
+        'label'              => 'Choose a date or time',
+    ],
     'chart' => [
         'label'    => 'Chart',
         'fallback' => 'Read the accompanying description or data table for these values.',

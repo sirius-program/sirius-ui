@@ -47,6 +47,7 @@
         <input type="text" {{ $component->controlAttributes()->except(array_keys($bindings->getAttributes()))->merge(['inputmode' => 'decimal', 'value' => $value]) }}
             data-sir-currency-display data-thousands="{{ $thousandsSeparator }}" data-decimal="{{ $decimalSeparator }}"
             data-precision="{{ (int) $precision }}" data-negative="{{ $allowNegative ? 'true' : 'false' }}"
+            data-currency-messages="{{ json_encode(['incomplete' => __('sirius::sirius-ui.currency.incomplete'), 'invalid' => __('sirius::sirius-ui.currency.invalid'), 'negative' => __('sirius::sirius-ui.currency.negative'), 'precision' => __('sirius::sirius-ui.currency.precision'), 'min' => __('sirius::sirius-ui.currency.min'), 'max' => __('sirius::sirius-ui.currency.max')], JSON_THROW_ON_ERROR) }}"
             data-sir-server-invalid="{{ $component->messages() !== [] ? 'true' : 'false' }}">
         <input type="hidden" data-sir-currency-value @if ($bindings->isNotEmpty()) wire:ignore @endif name="{{ $name }}" value="{{ $value }}" disabled
             @if ($attributes->has('form')) form="{{ $attributes->get('form') }}" @endif

@@ -5,9 +5,11 @@
     'size' => 'md', 'wrapperClass' => '', 'value' => null,
     'country' => null, 'delimiter' => ' ', 'controlSize' => null,
     'draft' => null, 'draftName' => null, 'resetKey' => 0,
-    'countryLabel' => 'Country calling code', 'invalidMessage' => 'Enter a valid phone number for an allowed country.',
+    'countryLabel' => null, 'invalidMessage' => null,
 ])
 @php
+    $countryLabel ??= __('sirius::sirius-ui.phone.country_label');
+    $invalidMessage ??= __('sirius::sirius-ui.phone.invalid');
     $phoneCountry = \Sirius\Ui\Support\PhoneCountry::resolve($country);
     $phoneCountries = \Sirius\Ui\Support\PhoneCountry::countries();
     if (!in_array($delimiter, [' ', '-', '.', ''], true)) {
@@ -54,6 +56,6 @@
             <input type="hidden" data-phone-draft name="{{ $draftName }}" disabled @if ($attributes->has('form')) form="{{ $attributes->get('form') }}" @endif>
         @endif
         <p class="sir-error" data-phone-error id="{{ $component->id }}-phone-error" aria-live="polite" hidden></p>
-        <noscript><p class="sir-helper">JavaScript is required to submit this phone field in international format.</p></noscript>
+        <noscript><p class="sir-helper">{{ __('sirius::sirius-ui.phone.requires_js') }}</p></noscript>
     </div>
 </x-sirius-internal-field>

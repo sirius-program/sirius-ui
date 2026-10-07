@@ -6,10 +6,12 @@
     'size' => 'md', 'wrapperClass' => '', 'type' => 'text',
     'prefix' => null, 'suffix' => null, 'value' => null,
     'checked' => false, 'indeterminate' => false, 'resize' => 'vertical',
-    'showLabel' => 'Show', 'hideLabel' => 'Hide',
+    'showLabel' => null, 'hideLabel' => null,
     'controlSize' => null,
 ])
 @php
+    $showLabel ??= __('sirius::sirius-ui.input.show_password');
+    $hideLabel ??= __('sirius::sirius-ui.input.hide_password');
     $choice = in_array($kind, ['checkbox', 'radio', 'switch'], true);
     $groupContext = in_array($kind, ['checkbox', 'radio'], true) && is_callable($choiceGroup) ? $choiceGroup() : null;
     if ($groupContext !== null) {

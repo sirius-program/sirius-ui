@@ -45,6 +45,7 @@ const TomSelect = module.exports;
 ${read('resources/js/select.js')}
 })();`;
 const names = new Intl.DisplayNames(['en'], { type: 'region' });
+const countryLabels = JSON.parse(read('resources/data/phone-countries.json'));
 const uploadVendor = path => `(function () { const module = { exports: {} }; const exports = module.exports; ${read(path)}; return module.exports; })()`;
 const fileUpload = `(() => {
 const FilePond = ${uploadVendor('node_modules/filepond/dist/filepond.min.js')};
@@ -56,7 +57,7 @@ ${read('resources/js/file-upload-pdf.js')}
 ${read('resources/js/file-upload.js')}
 })();`;
 mkdirSync('resources/data', { recursive: true });
-writeFileSync('resources/data/phone-countries.json', JSON.stringify(Object.fromEntries(getCountries().map(country => [country, { code: getCountryCallingCode(country), name: names.of(country) }])), null, 2) + '\n');
+writeFileSync('resources/data/phone-countries.json', JSON.stringify(Object.fromEntries(getCountries().map(country => [country, { code: getCountryCallingCode(country), name: countryLabels[country]?.name ?? names.of(country) }])), null, 2) + '\n');
 writeFileSync('dist/sirius.js', [chart.outputFiles[0].text, calendar.outputFiles[0].text, read('resources/js/table.js'), read('resources/js/sirius.js'), read('resources/js/avatar.js'), read('resources/js/navigation.js'), read('resources/js/tabs.js'), read('resources/js/floating.js'), read('resources/js/overlays.js'), read('resources/js/toast.js'), read('resources/js/currency.js'), read('resources/js/slider.js'), datetimePicker, phone, select, fileUpload, editor.outputFiles.find(file => file.path.endsWith('.js')).text].join('\n'));
 writeFileSync('dist/sirius.css', read('dist/sirius.css') + '\n' + editor.outputFiles.find(file => file.path.endsWith('.css')).text);
 let notices = `Flatpickr 4.6.13 (MIT) — date/time picker and bundled locales\n\n${read('node_modules/flatpickr/LICENSE.md')}\n\nlibphonenumber-js 1.13.13 (MIT) and Google-derived numbering metadata (Apache-2.0)\n\n${read('node_modules/libphonenumber-js/LICENSE')}\n\n${read('node_modules/libphonenumber-js/LICENSE.Apache')}\n\nTom Select 2.6.2 (Apache-2.0)\n${read('node_modules/tom-select/LICENSE')}\n\nSifter (Apache-2.0)\n${read('node_modules/@orchidjs/sifter/README.md').split('## License')[1]}\n\nUnicode Variants (Apache-2.0)\n${read('node_modules/@orchidjs/unicode-variants/LICENSE')}`;

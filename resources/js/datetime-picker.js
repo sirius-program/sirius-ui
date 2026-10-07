@@ -20,7 +20,7 @@ function allowed(date, state) {
 }
 
 function validity(state, valid) {
-    state.input.setCustomValidity(valid ? '' : 'Enter an available date or time in the displayed format.');
+    state.input.setCustomValidity(valid ? '' : state.config.messages.invalid);
     const invalid = !valid || state.input.dataset.sirServerInvalid === 'true';
     if (state.input.getAttribute('aria-invalid') !== String(invalid)) state.input.setAttribute('aria-invalid', String(invalid));
     state.valid = valid;
@@ -66,7 +66,7 @@ function initialize(input) {
         const config = JSON.parse(signature);
         const locale = locales[config.options.locale];
         if (!locale) {
-            input.setCustomValidity('Unsupported datetime picker locale.');
+            input.setCustomValidity(config.messages.unsupported_locale);
             return;
         }
         state = { input, hidden, config, locale, signature, initial: input.defaultValue, canonical: null, display: input.value, valid: true };
@@ -109,7 +109,7 @@ function initialize(input) {
                 picker.calendarContainer.classList.add('sir-date-calendar');
                 picker.calendarContainer.id = input.id + '-calendar';
                 picker.calendarContainer.setAttribute('role', 'dialog');
-                picker.calendarContainer.setAttribute('aria-label', input.labels?.[0]?.textContent || input.getAttribute('aria-label') || 'Choose a date or time');
+                picker.calendarContainer.setAttribute('aria-label', input.labels?.[0]?.textContent || input.getAttribute('aria-label') || config.messages.label);
                 picker.calendarContainer.setAttribute('wire:ignore', '');
                 picker.calendarContainer.setAttribute('data-sir-date-calendar', input.id);
             },

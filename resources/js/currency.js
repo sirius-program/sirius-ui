@@ -53,13 +53,14 @@
     }
 
     function validity(input, canonical) {
-        let message = input.value === '-' ? 'Complete the amount.' : '';
+        const messages = JSON.parse(input.dataset.currencyMessages);
+        let message = input.value === '-' ? messages.incomplete : '';
         if (canonical !== '') {
-            if (!/^-?\d+(?:\.\d+)?$/.test(canonical)) message = 'Enter a valid decimal amount.';
-            else if (canonical.startsWith('-') && input.dataset.negative !== 'true') message = 'Negative amounts are not allowed.';
-            else if ((canonical.split('.')[1] || '').length > Number(input.dataset.precision)) message = `Use at most ${input.dataset.precision} decimal places.`;
-            else if (input.hasAttribute('min') && compare(canonical, input.getAttribute('min')) < 0) message = `The amount must be at least ${input.getAttribute('min')}.`;
-            else if (input.hasAttribute('max') && compare(canonical, input.getAttribute('max')) > 0) message = `The amount must not exceed ${input.getAttribute('max')}.`;
+            if (!/^-?\d+(?:\.\d+)?$/.test(canonical)) message = messages.invalid;
+            else if (canonical.startsWith('-') && input.dataset.negative !== 'true') message = messages.negative;
+            else if ((canonical.split('.')[1] || '').length > Number(input.dataset.precision)) message = messages.precision.replaceAll(':precision', input.dataset.precision);
+            else if (input.hasAttribute('min') && compare(canonical, input.getAttribute('min')) < 0) message = messages.min.replaceAll(':min', input.getAttribute('min'));
+            else if (input.hasAttribute('max') && compare(canonical, input.getAttribute('max')) > 0) message = messages.max.replaceAll(':max', input.getAttribute('max'));
         }
         input.setCustomValidity(message);
         const invalid = message !== '' || input.dataset.sirServerInvalid === 'true';

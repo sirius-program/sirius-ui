@@ -7,6 +7,15 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
 
+it('uses application translations for picker feedback independently of its calendar locale', function (): void {
+    app('translator')->addLines(['sirius-ui.datetime-picker.clear' => 'Kosongkan', 'sirius-ui.datetime-picker.invalid' => 'Tanggal tidak tersedia.'], 'id', 'sirius');
+    app()->setLocale('id');
+    $html = Blade::render('<x-sirius::datetime-picker locale="en" />');
+
+    expect($html)->toContain('aria-label="Kosongkan"', 'Tanggal tidak tersedia.');
+    expect($html)->not->toContain('aria-label="Clear"');
+});
+
 it('renders date types with separate canonical bindings and shared accessible validation', function (string $type, string $value, string $format): void {
     $errors = (new ViewErrorBag)->put('trip', new MessageBag(['trip.date' => ['Choose a valid date.']]));
     $html = Blade::render('<x-sirius::datetime-picker id="departure" name="trip[date]" wire:model.live="trip.date" label="Departure" helper="Local time" :type="$type" :value="$value" :errors="$errors" error-bag="trip" required readonly form="trip" data-test="date" />', ['type' => $type, 'value' => $value, 'errors' => $errors]);

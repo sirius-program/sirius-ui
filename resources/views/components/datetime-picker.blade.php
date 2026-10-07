@@ -114,10 +114,10 @@
                 @endif
             </span>
         <input type="text" {{ $component->controlAttributes()->except(array_keys($bindings->getAttributes()))->merge(['value' => $value, 'autocomplete' => 'off']) }}
-            data-sir-date-display data-sir-date-config="{{ json_encode(['type' => $type, 'format' => $displayFormat, 'canonical' => str_replace('s', 'S', $canonicalFormat), 'timezone' => $timezone, 'weekStart' => $weekStart, 'options' => $settings], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES) }}"
+            data-sir-date-display data-sir-date-config="{{ json_encode(['type' => $type, 'format' => $displayFormat, 'canonical' => str_replace('s', 'S', $canonicalFormat), 'timezone' => $timezone, 'weekStart' => $weekStart, 'options' => $settings, 'messages' => ['invalid' => __('sirius::sirius-ui.datetime-picker.invalid'), 'unsupported_locale' => __('sirius::sirius-ui.datetime-picker.unsupported_locale'), 'label' => __('sirius::sirius-ui.datetime-picker.label')]], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES) }}"
             data-sir-server-invalid="{{ $component->messages() !== [] ? 'true' : 'false' }}">
         @if ($clearable)
-            <button type="button" class="sir-adornment sir-date-clear" data-sir-date-clear hidden aria-label="Clear" title="Clear" @disabled($disabled || $readonly)><x-heroicon-o-x-mark aria-hidden="true" class="sir-icon" /></button>
+            <button type="button" class="sir-adornment sir-date-clear" data-sir-date-clear hidden aria-label="{{ __('sirius::sirius-ui.datetime-picker.clear') }}" title="{{ __('sirius::sirius-ui.datetime-picker.clear') }}" @disabled($disabled || $readonly)><x-heroicon-o-x-mark aria-hidden="true" class="sir-icon" /></button>
         @endif
         </div>
         <input type="hidden" data-sir-date-value @if ($bindings->isNotEmpty()) wire:ignore @endif name="{{ $name }}" value="{{ $value }}" disabled

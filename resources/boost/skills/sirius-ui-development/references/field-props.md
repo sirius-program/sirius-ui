@@ -25,8 +25,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `checked` | `false` |
 | `indeterminate` | `false` |
 | `resize` | `'vertical'` |
-| `show-label` | `'Show'` |
-| `hide-label` | `'Hide'` |
+| `show-label` | `null` → `sirius::sirius-ui.input.show_password` |
+| `hide-label` | `null` → `sirius::sirius-ui.input.hide_password` |
 | `control-size` | `null` |
 
 ## currency
@@ -134,8 +134,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `checked` | `false` |
 | `indeterminate` | `false` |
 | `resize` | `'vertical'` |
-| `show-label` | `'Show'` |
-| `hide-label` | `'Hide'` |
+| `show-label` | `null` → `sirius::sirius-ui.input.show_password` |
+| `hide-label` | `null` → `sirius::sirius-ui.input.hide_password` |
 | `control-size` | `null` |
 
 ## label
@@ -171,8 +171,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `draft` | `null` |
 | `draft-name` | `null` |
 | `reset-key` | `0` |
-| `country-label` | `'Country calling code'` |
-| `invalid-message` | `'Enter a valid phone number for an allowed country.'` |
+| `country-label` | `null` → `sirius::sirius-ui.phone.country_label` |
+| `invalid-message` | `null` → `sirius::sirius-ui.phone.invalid` |
 
 ## radio
 
@@ -197,8 +197,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `checked` | `false` |
 | `indeterminate` | `false` |
 | `resize` | `'vertical'` |
-| `show-label` | `'Show'` |
-| `hide-label` | `'Hide'` |
+| `show-label` | `null` → `sirius::sirius-ui.input.show_password` |
+| `hide-label` | `null` → `sirius::sirius-ui.input.hide_password` |
 | `control-size` | `null` |
 
 ## richtext
@@ -298,8 +298,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `checked` | `false` |
 | `indeterminate` | `false` |
 | `resize` | `'vertical'` |
-| `show-label` | `'Show'` |
-| `hide-label` | `'Hide'` |
+| `show-label` | `null` → `sirius::sirius-ui.input.show_password` |
+| `hide-label` | `null` → `sirius::sirius-ui.input.hide_password` |
 | `control-size` | `null` |
 
 ## textarea
@@ -325,8 +325,8 @@ Defaults are declared PHP values. See fields.md for resolved configuration and b
 | `checked` | `false` |
 | `indeterminate` | `false` |
 | `resize` | `'vertical'` |
-| `show-label` | `'Show'` |
-| `hide-label` | `'Hide'` |
+| `show-label` | `null` → `sirius::sirius-ui.input.show_password` |
+| `hide-label` | `null` → `sirius::sirius-ui.input.hide_password` |
 | `control-size` | `null` |
 
 ## field (class-backed)

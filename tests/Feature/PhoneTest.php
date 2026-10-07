@@ -8,6 +8,15 @@ use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\ViewException;
 use Sirius\Ui\Support\PhoneCountry;
 
+it('uses translated phone feedback unless the caller provides it', function (): void {
+    app('translator')->addLines(['sirius-ui.phone.country_label' => 'Kode panggilan', 'sirius-ui.phone.invalid' => 'Nomor tidak valid.'], 'id', 'sirius');
+    app()->setLocale('id');
+    $html = Blade::render('<x-sirius::phone country="ID" />');
+    expect($html)->toContain('Kode panggilan', 'Nomor tidak valid.');
+    $custom = Blade::render('<x-sirius::phone country="ID" country-label="Dial code" invalid-message="Custom feedback" />');
+    expect($custom)->toContain('Dial code', 'Custom feedback');
+});
+
 it('resolves country lists and regional locales without confusing language and country', function (mixed $country, array $countries): void {
     expect(PhoneCountry::resolve($country))->toBe(['countries' => $countries, 'initial' => $countries[0]]);
 })->with([

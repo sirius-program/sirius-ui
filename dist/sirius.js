@@ -1616,13 +1616,14 @@ if (!window[avatarOwner]) {
     }
 
     function validity(input, canonical) {
-        let message = input.value === '-' ? 'Complete the amount.' : '';
+        const messages = JSON.parse(input.dataset.currencyMessages);
+        let message = input.value === '-' ? messages.incomplete : '';
         if (canonical !== '') {
-            if (!/^-?\d+(?:\.\d+)?$/.test(canonical)) message = 'Enter a valid decimal amount.';
-            else if (canonical.startsWith('-') && input.dataset.negative !== 'true') message = 'Negative amounts are not allowed.';
-            else if ((canonical.split('.')[1] || '').length > Number(input.dataset.precision)) message = `Use at most ${input.dataset.precision} decimal places.`;
-            else if (input.hasAttribute('min') && compare(canonical, input.getAttribute('min')) < 0) message = `The amount must be at least ${input.getAttribute('min')}.`;
-            else if (input.hasAttribute('max') && compare(canonical, input.getAttribute('max')) > 0) message = `The amount must not exceed ${input.getAttribute('max')}.`;
+            if (!/^-?\d+(?:\.\d+)?$/.test(canonical)) message = messages.invalid;
+            else if (canonical.startsWith('-') && input.dataset.negative !== 'true') message = messages.negative;
+            else if ((canonical.split('.')[1] || '').length > Number(input.dataset.precision)) message = messages.precision.replaceAll(':precision', input.dataset.precision);
+            else if (input.hasAttribute('min') && compare(canonical, input.getAttribute('min')) < 0) message = messages.min.replaceAll(':min', input.getAttribute('min'));
+            else if (input.hasAttribute('max') && compare(canonical, input.getAttribute('max')) > 0) message = messages.max.replaceAll(':max', input.getAttribute('max'));
         }
         input.setCustomValidity(message);
         const invalid = message !== '' || input.dataset.sirServerInvalid === 'true';
@@ -5835,7 +5836,7 @@ function allowed(date, state) {
 }
 
 function validity(state, valid) {
-    state.input.setCustomValidity(valid ? '' : 'Enter an available date or time in the displayed format.');
+    state.input.setCustomValidity(valid ? '' : state.config.messages.invalid);
     const invalid = !valid || state.input.dataset.sirServerInvalid === 'true';
     if (state.input.getAttribute('aria-invalid') !== String(invalid)) state.input.setAttribute('aria-invalid', String(invalid));
     state.valid = valid;
@@ -5881,7 +5882,7 @@ function initialize(input) {
         const config = JSON.parse(signature);
         const locale = locales[config.options.locale];
         if (!locale) {
-            input.setCustomValidity('Unsupported datetime picker locale.');
+            input.setCustomValidity(config.messages.unsupported_locale);
             return;
         }
         state = { input, hidden, config, locale, signature, initial: input.defaultValue, canonical: null, display: input.value, valid: true };
@@ -5924,7 +5925,7 @@ function initialize(input) {
                 picker.calendarContainer.classList.add('sir-date-calendar');
                 picker.calendarContainer.id = input.id + '-calendar';
                 picker.calendarContainer.setAttribute('role', 'dialog');
-                picker.calendarContainer.setAttribute('aria-label', input.labels?.[0]?.textContent || input.getAttribute('aria-label') || 'Choose a date or time');
+                picker.calendarContainer.setAttribute('aria-label', input.labels?.[0]?.textContent || input.getAttribute('aria-label') || config.messages.label);
                 picker.calendarContainer.setAttribute('wire:ignore', '');
                 picker.calendarContainer.setAttribute('data-sir-date-calendar', input.id);
             },

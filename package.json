@@ -35,5 +35,10 @@
         "tailwindcss": "^4.1.0",
         "temporal-polyfill": "1.0.5",
         "tom-select": "2.6.2"
+    },
+    "overrides": {
+        "@tailwindcss/cli": {
+            "@parcel/watcher": "2.6.0"
+        }
     }
 }
