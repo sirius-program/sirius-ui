@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
 use Livewire\Livewire;
+use Sirius\Ui\Console\InstallSkillCommand;
 use Sirius\Ui\View\Components\Field;
 
 final class SiriusUiServiceProvider extends ServiceProvider
@@ -19,6 +20,10 @@ final class SiriusUiServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([InstallSkillCommand::class]);
+        }
+
         $bladeNamespace = $this->componentNamespace('sirius-ui.namespace.blade');
         $livewireNamespace = $this->componentNamespace('sirius-ui.namespace.livewire');
 

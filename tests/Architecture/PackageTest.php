@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
+use Illuminate\Console\Command;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Livewire\Component;
+use Sirius\Ui\Support\SkillInstaller;
 use Symfony\Component\Finder\Finder;
 
 arch('production code stays independent of consuming applications and tests', function (): void {
@@ -22,6 +25,11 @@ arch('Livewire classes inherit the framework component directly or indirectly', 
 
 arch('component support stays independent of persistence', function (): void {
     expect('Sirius\Ui\Support')->not->toUse(['Illuminate\Database', DB::class]);
+});
+
+arch('skill commands stay in the console layer and installers do not invoke agent runtimes', function (): void {
+    expect('Sirius\Ui\Console')->classes()->toExtend(Command::class);
+    expect(SkillInstaller::class)->not->toUse(['Laravel\Boost', 'Symfony\Component\Process', Http::class]);
 });
 
 arch('reusable validation rules implement the Laravel contract without persistence', function (): void {

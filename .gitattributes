@@ -5,6 +5,7 @@
 *.php diff=php
 
 /tests export-ignore
+/resources/boost/skills/** text eol=lf
 /.github export-ignore
 /.editorconfig export-ignore
 /.gitattributes export-ignore
