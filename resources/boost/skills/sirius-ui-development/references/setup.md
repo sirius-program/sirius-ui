@@ -43,6 +43,8 @@ Password toggle labels use input.show_password/hide_password. Phone country labe
 
 ## Themes and icons
 
+Add `sir-scrollbar` to a scroll container or the layout's `html` element to style its scrollbars and descendants. The native scrollbar uses a thin rounded thumb and light/dark colors; it retains system styling in forced-colors mode. Override `--sir-scrollbar-size`, `--sir-scrollbar-track`, `--sir-scrollbar-thumb`, and `--sir-scrollbar-thumb-hover` after Sirius CSS. Browsers without WebKit scrollbar selectors use standard thin/color styling instead of exact pixel sizing and hover colors.
+
 Load overrides after Sirius CSS. .dark activates the dark theme; follow the application's theme persistence. Inspect resources/css/sirius.css for available --sir-* tokens and per-variant tone styles. Example in recipes.md. --sir-color-primary is used by interactive widgets; semantic button/badge tones have their own rules, so verify the intended component rather than assuming one token changes all variants.
 
 Use x-sirius::icon name="heroicon-o-clock"; label makes the icon meaningful to assistive technology, otherwise it is decorative. Heroicons are bundled through Blade Icons; use valid installed icon names. Clear compiled views/icon cache after an environment mismatch with php artisan view:clear and php artisan icons:clear. Do not edit vendor.

@@ -22,6 +22,10 @@
     --sir-field-gap: 0.375rem;
     --sir-control-padding-x: 0.75rem;
     --sir-control-padding-y: 0.5rem;
+    --sir-scrollbar-size: 0.5rem;
+    --sir-scrollbar-track: color-mix(in oklch, var(--sir-color-border), var(--sir-color-surface) 80%);
+    --sir-scrollbar-thumb: var(--color-slate-400);
+    --sir-scrollbar-thumb-hover: var(--color-slate-500);
 }
 
 .sir-chart { min-width: 0; color: var(--sir-color-text); }
@@ -157,6 +161,46 @@
     --sir-color-muted: var(--color-slate-300);
     --sir-color-border: var(--color-slate-600);
     --sir-color-danger: var(--color-red-400);
+    --sir-scrollbar-thumb: var(--color-slate-500);
+    --sir-scrollbar-thumb-hover: var(--color-slate-400);
+}
+
+@media (forced-colors: none) {
+    :where(.sir-scrollbar, .sir-scrollbar *) {
+        scrollbar-width: thin;
+        scrollbar-color: var(--sir-scrollbar-thumb) var(--sir-scrollbar-track);
+    }
+
+    @supports selector(::-webkit-scrollbar) {
+        :where(.sir-scrollbar, .sir-scrollbar *) {
+            scrollbar-width: auto;
+            scrollbar-color: auto;
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar {
+            width: var(--sir-scrollbar-size);
+            height: var(--sir-scrollbar-size);
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar-track {
+            border-radius: 999px;
+            background: var(--sir-scrollbar-track);
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar-thumb {
+            min-height: 2rem;
+            border-radius: 999px;
+            background: var(--sir-scrollbar-thumb);
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar-thumb:hover {
+            background: var(--sir-scrollbar-thumb-hover);
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        :where(.sir-scrollbar, .sir-scrollbar *)::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+    }
 }
 
 @layer components {
