@@ -30,6 +30,14 @@ jobs:
             - name: Install frontend dependencies
               run: npm ci
 
+            - name: Validate package metadata
+              run: composer validate
+
+            - name: Audit dependencies
+              run: |
+                  composer audit
+                  npm audit
+
             - name: Build styles
               run: npm run build
 

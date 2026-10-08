@@ -1,6 +1,12 @@
 {
     "name": "sirius/ui",
     "description": "Reusable Laravel Blade and Livewire UI components styled with Tailwind CSS.",
+    "homepage": "https://github.com/sirius-program/sirius-ui",
+    "support": {
+        "docs": "https://github.com/sirius-program/sirius-ui-docs#readme",
+        "issues": "https://github.com/sirius-program/sirius-ui/issues",
+        "source": "https://github.com/sirius-program/sirius-ui"
+    },
     "keywords": [
         "blade",
         "components",
