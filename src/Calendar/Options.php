@@ -6,6 +6,7 @@ namespace Sirius\Ui\Calendar;
 
 use DateTimeZone;
 use InvalidArgumentException;
+use Sirius\Ui\Support\RegionalSettings;
 
 final class Options
 {
@@ -20,6 +21,7 @@ final class Options
     public static function validate(array $settings): array
     {
         self::serializable($settings);
+        RegionalSettings::options($settings);
         foreach (self::OWNED as $key) {
             if (array_key_exists($key, $settings)) {
                 throw new InvalidArgumentException('Calendar option is adapter-owned or unsupported: ' . $key);

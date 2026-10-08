@@ -13,12 +13,14 @@ final class PhoneCountry
     {
         /** @var array<string, array{code: string, name: string}> $countries */
         $countries = json_decode((string) file_get_contents(__DIR__ . '/../../resources/data/phone-countries.json'), true, flags: JSON_THROW_ON_ERROR);
+        unset($countries['IL']);
 
         return $countries;
     }
 
     public static function country(mixed $input): string
     {
+        RegionalSettings::country($input);
         if (!is_string($input) || !preg_match('/^[a-z]{2,3}(?:[-_][a-z]{2})?$/iD', $input)) {
             throw new InvalidArgumentException('Phone country must be a supported country or regional locale.');
         }
@@ -28,7 +30,7 @@ final class PhoneCountry
             return $country;
         }
         $language = strtolower($input);
-        $mapping = ['en' => 'US', 'ja' => 'JP', 'ko' => 'KR', 'zh' => 'CN', 'vi' => 'VN', 'uk' => 'UA', 'el' => 'GR', 'ar' => 'SA', 'he' => 'IL'];
+        $mapping = ['en' => 'US', 'ja' => 'JP', 'ko' => 'KR', 'zh' => 'CN', 'vi' => 'VN', 'uk' => 'UA', 'el' => 'GR', 'ar' => 'SA'];
         if (isset($mapping[$language])) {
             return $mapping[$language];
         }

@@ -14,6 +14,7 @@ use Livewire\Attributes\Renderless;
 use Livewire\Component;
 use Sirius\Ui\Calendar\Dates;
 use Sirius\Ui\Calendar\Options;
+use Sirius\Ui\Support\RegionalSettings;
 
 abstract class Calendar extends Component
 {
@@ -82,6 +83,11 @@ abstract class Calendar extends Component
             throw new InvalidArgumentException('Calendar requires a safe ID and a nonempty accessible label.');
         }
         $resolvedTimezone = $timezone ?? $options['timeZone'] ?? config('sirius-ui.timezone') ?? config('app.timezone') ?? 'UTC';
+        RegionalSettings::locale($locale);
+        RegionalSettings::locale($options['locale'] ?? null);
+        RegionalSettings::timezone($timezone);
+        RegionalSettings::timezone($options['timeZone'] ?? null);
+        RegionalSettings::timezone($resolvedTimezone);
         if (!is_string($resolvedTimezone)) {
             throw new InvalidArgumentException('Calendar timezone must be a string.');
         }

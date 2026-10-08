@@ -685,10 +685,20 @@ dialog .sir-date-calendar.flatpickr-calendar, [data-sir-dropdown] .sir-date-cale
 .sir-table th button:focus-visible, .sir-table-scroll:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: -2px; }
 .sir-table-actions { display: flex; gap: .375rem; flex-wrap: wrap; }
 .sir-table .sir-table-empty { text-align: center; padding: 2rem; color: var(--sir-color-muted); }
+.sir-table-footer-container { container: sir-table-footer / inline-size; }
 .sir-table-footer { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; padding: .75rem; font-size: .875rem; }
 .sir-table-page-size { display: flex; gap: .5rem; align-items: center; }
 .sir-table-page-size .sir-control { width: auto; }
 .sir-table-pagination { display: flex; justify-content: end; flex-wrap: wrap; align-items: center; gap: .125rem; }
 .sir-table-loading, .sir-calendar-loading { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; gap: .5rem; border-radius: inherit; background: color-mix(in oklch, var(--sir-color-surface), transparent 15%); backdrop-filter: blur(2px); cursor: wait; }
 .sir-table-loading[hidden], .sir-calendar-loading[hidden] { display: none !important; }
-@media (max-width: 640px) { .sir-table-footer { grid-template-columns: 1fr; } .sir-table-pagination { justify-content: start; } }
+@container sir-table-footer (max-width: 640px) {
+    .sir-table-footer { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+    .sir-table-pagination { justify-content: center; }
+}
+@supports not (container-type: inline-size) {
+    @media (max-width: 640px) {
+        .sir-table-footer { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+        .sir-table-pagination { justify-content: center; }
+    }
+}

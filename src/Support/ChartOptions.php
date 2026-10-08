@@ -17,6 +17,7 @@ final class ChartOptions
         self::type($type);
         self::serializable($data);
         self::serializable($options);
+        RegionalSettings::options($options);
         if (!isset($data['datasets']) || !is_array($data['datasets']) || !array_is_list($data['datasets'])) {
             throw new InvalidArgumentException('Chart data requires a list of datasets.');
         }
@@ -50,6 +51,7 @@ final class ChartOptions
                 ? array_replace_recursive($defaults[$key], $value) : $value;
         }
         $resolved = $defaults;
+        RegionalSettings::options($resolved);
         if ($height !== null) {
             $resolved['maintainAspectRatio'] = false;
         }

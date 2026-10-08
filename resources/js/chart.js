@@ -1,5 +1,6 @@
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
+import { assertRegionalSettings } from './regional-settings.js';
 
 (() => {
     const owner = Symbol.for('sirius.ui.chart');
@@ -79,6 +80,8 @@ import 'chartjs-adapter-date-fns';
                 }
                 if (extra.options !== undefined && !plain(extra.options)) throw new TypeError('Chart extension options must be an object.');
                 if (extra.plugins !== undefined && !Array.isArray(extra.plugins)) throw new TypeError('Chart extension plugins must be an array.');
+                assertRegionalSettings(payload.options);
+                assertRegionalSettings(extra.options);
                 const borderColor = getComputedStyle(root).getPropertyValue('--sir-color-border').trim();
                 const options = merge({ color, plugins: { legend: { labels: { color } }, title: { color }, subtitle: { color } } }, payload.options, extra.options);
                 if (payload.explicitHeight) options.maintainAspectRatio = false;
@@ -99,6 +102,11 @@ import 'chartjs-adapter-date-fns';
                 state.canvas.width = Math.max(1, stage.clientWidth);
                 state.canvas.height = payload.height;
                 state.chart = new Chart(state.canvas, { type: payload.type, data: copy(payload.data), options, plugins: [themePlugin, ...extra.plugins ?? []] });
+                const update = state.chart.update;
+                state.chart.update = function (...args) {
+                    assertRegionalSettings(this.config.options);
+                    return update.apply(this, args);
+                };
                 state.factory = factory;
                 state.signature = signature;
                 root.dispatchEvent(new CustomEvent('sirius:chart-ready', { bubbles: true, detail: { id: root.id, chart: state.chart } }));

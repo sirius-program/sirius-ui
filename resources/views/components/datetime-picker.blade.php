@@ -17,6 +17,7 @@
         throw new InvalidArgumentException('Datetime picker values must be canonical strings or null.');
     }
     $timezone ??= config('sirius-ui.timezone') ?? config('app.timezone') ?? 'UTC';
+    \Sirius\Ui\Support\RegionalSettings::timezone($timezone);
     if (!is_string($timezone) || !in_array($timezone, DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC), true)) {
         throw new InvalidArgumentException('Datetime picker timezone must be a valid IANA timezone.');
     }
@@ -24,14 +25,17 @@
     if (!is_array($options) || array_diff(array_keys($options), $allowedOptions) !== []) {
         throw new InvalidArgumentException('Unsupported datetime picker option; lifecycle, parsing, value, and selection options are managed internally.');
     }
+    \Sirius\Ui\Support\RegionalSettings::locale($locale);
+    \Sirius\Ui\Support\RegionalSettings::locale($options['locale'] ?? null);
     $settings = array_replace(['minuteIncrement' => 5, 'time_24hr' => true, 'locale' => config('sirius-ui.locale') ?? config('app.locale') ?? config('app.fallback_locale') ?? 'en'], $options, array_filter([
         'minDate' => $minDate, 'maxDate' => $maxDate, 'minTime' => $minTime, 'maxTime' => $maxTime,
         'disable' => $disabledDates, 'locale' => $locale, 'minuteIncrement' => $minuteIncrement,
     ], fn ($setting) => $setting !== null));
-    $supportedLocales = ['ar', 'at', 'az', 'be', 'bg', 'bn', 'bs', 'ca', 'ckb', 'cat', 'cs', 'cy', 'da', 'de', 'default', 'en', 'eo', 'es', 'et', 'fa', 'fi', 'fo', 'fr', 'gr', 'he', 'hi', 'hr', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'ka', 'ko', 'km', 'kz', 'lt', 'lv', 'mk', 'mn', 'ms', 'my', 'nl', 'nn', 'no', 'pa', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr', 'sv', 'th', 'tr', 'uk', 'vn', 'zh', 'zh_tw', 'uz', 'uz_latn'];
+    $supportedLocales = ['ar', 'at', 'az', 'be', 'bg', 'bn', 'bs', 'ca', 'ckb', 'cat', 'cs', 'cy', 'da', 'de', 'default', 'en', 'eo', 'es', 'et', 'fa', 'fi', 'fo', 'fr', 'gr', 'hi', 'hr', 'hu', 'hy', 'id', 'is', 'it', 'ja', 'ka', 'ko', 'km', 'kz', 'lt', 'lv', 'mk', 'mn', 'ms', 'my', 'nl', 'nn', 'no', 'pa', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr', 'sv', 'th', 'tr', 'uk', 'vn', 'zh', 'zh_tw', 'uz', 'uz_latn'];
     if (!is_string($settings['locale'])) {
         throw new InvalidArgumentException('Datetime picker locale must be a supported locale string.');
     }
+    \Sirius\Ui\Support\RegionalSettings::locale($settings['locale']);
     $resolvedLocale = strtolower(str_replace('-', '_', $settings['locale']));
     if (!in_array($resolvedLocale, $supportedLocales, true)) {
         $language = explode('_', $resolvedLocale)[0];

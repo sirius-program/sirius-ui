@@ -5,6 +5,7 @@ import timeGrid from 'fullcalendar/timegrid';
 import list from 'fullcalendar/list';
 import interaction from 'fullcalendar/interaction';
 import locales from 'fullcalendar/locales-all';
+import { assertRegionalSettings } from './regional-settings.js';
 
 (() => {
     const owner = Symbol.for('sirius.ui.calendar');
@@ -127,6 +128,8 @@ import locales from 'fullcalendar/locales-all';
         const options = JSON.parse(state.config);
         const extension = extensions.get(state.root.id);
         const extra = extension?.({ id: state.root.id, element: state.root, wire: state.wire }) ?? {};
+        assertRegionalSettings(options);
+        assertRegionalSettings(extra);
         for (const key of Object.keys(extra)) if (owned.has(key)) throw new TypeError('Calendar extension cannot replace adapter-owned option: ' + key);
         for (const view of Object.values(extra.views ?? {})) for (const key of Object.keys(view)) if (owned.has(key)) throw new TypeError('Calendar view extension cannot replace adapter-owned option: ' + key);
         state.extension = extension;
@@ -136,7 +139,7 @@ import locales from 'fullcalendar/locales-all';
         const buttons = Object.fromEntries(['prev', 'next', 'today', 'dayGridMonth', 'timeGridWeek', 'timeGridDay', 'listWeek'].map(key => [key, { text: t[key], hint: t[key] }]));
         state.calendar = new Calendar(state.ui, {
             ...options, ...extra, ...(restore ? { initialDate: restore.date, initialView: restore.view } : {}),
-            plugins: [theme, dayGrid, timeGrid, list, interaction], locales,
+            plugins: [theme, dayGrid, timeGrid, list, interaction], locales: locales.filter(locale => locale.code !== 'he'),
             buttons: { ...buttons, ...options.buttons, ...extra.buttons },
             allDayText: options.allDayText ?? t.all_day, noEventsContent: options.noEventsContent ?? t.empty,
             eventDidMount(info) {
@@ -161,6 +164,11 @@ import locales from 'fullcalendar/locales-all';
             eventClick(info) { info.jsEvent.preventDefault(); interact(state, 'event-click', { eventId: info.event.id, occurrence: span(info.event) }); },
             eventDrop: info => mutate(state, 'event-drop', info), eventResize: info => mutate(state, 'event-resize', info),
         });
+        const setOption = state.calendar.setOption;
+        state.calendar.setOption = function (name, value) {
+            assertRegionalSettings({ [name]: value });
+            return setOption.call(this, name, value);
+        };
         state.calendar.render();
         state.root.dispatchEvent(new CustomEvent('sirius:calendar-ready', { bubbles: true, detail: { id: state.root.id, calendar: state.calendar } }));
     }
