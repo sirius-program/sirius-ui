@@ -66,18 +66,20 @@
                     </tbody>
                 </table>
             </div>
-            <div class="sir-table-footer">
-                <div><p>{{ __('sirius::sirius-ui.table.summary', ['from' => $records->firstItem() ?? 0, 'to' => $records->lastItem() ?? 0, 'shown' => $records->count(), 'total' => $records->total(), 'label' => $entityLabel]) }}</p>@if($bulkActionsView !== null)<p data-table-selected-count role="status">{{ __('sirius::sirius-ui.table.selected_count', ['count' => count($selectedIds)]) }}</p>@endif</div>
-                <div class="sir-table-page-size"><x-sirius-internal-label :for="$tableId.'-per-page'">{{ __('sirius::sirius-ui.table.per_page') }}</x-sirius-internal-label><select id="{{ $tableId }}-per-page" class="sir-control" wire:model.live="perPage">@foreach($pageSizes as $size)<option value="{{ $size }}">{{ $size }}</option>@endforeach</select></div>
-                <nav class="sir-table-pagination" aria-label="{{ __('sirius::sirius-ui.table.pagination') }}">
-                    <x-sirius-internal-button size="sm" variant="ghost" :disabled="$records->onFirstPage()" wire:click="goToPage({{ $page - 1 }})">{{ __('sirius::sirius-ui.table.back') }}</x-sirius-internal-button>
-                    @foreach($pages as $number)
-                        @if($number === null)<span aria-hidden="true">…</span>@else
-                            <x-sirius-internal-button size="sm" :variant="$number === $page ? 'primary' : 'ghost'" :aria-current="$number === $page ? 'page' : null" :aria-label="__('sirius::sirius-ui.table.page', ['number' => $number])" wire:click="goToPage({{ $number }})">{{ $number }}</x-sirius-internal-button>
-                        @endif
-                    @endforeach
-                    <x-sirius-internal-button size="sm" variant="ghost" :disabled="!$records->hasMorePages()" wire:click="goToPage({{ $page + 1 }})">{{ __('sirius::sirius-ui.table.next') }}</x-sirius-internal-button>
-                </nav>
+            <div class="sir-table-footer-container">
+                <div class="sir-table-footer">
+                    <div><p>{{ __('sirius::sirius-ui.table.summary', ['from' => $records->firstItem() ?? 0, 'to' => $records->lastItem() ?? 0, 'shown' => $records->count(), 'total' => $records->total(), 'label' => $entityLabel]) }}</p>@if($bulkActionsView !== null)<p data-table-selected-count role="status">{{ __('sirius::sirius-ui.table.selected_count', ['count' => count($selectedIds)]) }}</p>@endif</div>
+                    <div class="sir-table-page-size"><x-sirius-internal-label :for="$tableId.'-per-page'">{{ __('sirius::sirius-ui.table.per_page') }}</x-sirius-internal-label><select id="{{ $tableId }}-per-page" class="sir-control" wire:model.live="perPage">@foreach($pageSizes as $size)<option value="{{ $size }}">{{ $size }}</option>@endforeach</select></div>
+                    <nav class="sir-table-pagination" aria-label="{{ __('sirius::sirius-ui.table.pagination') }}">
+                        <x-sirius-internal-button size="sm" variant="ghost" :disabled="$records->onFirstPage()" wire:click="goToPage({{ $page - 1 }})">{{ __('sirius::sirius-ui.table.back') }}</x-sirius-internal-button>
+                        @foreach($pages as $number)
+                            @if($number === null)<span aria-hidden="true">…</span>@else
+                                <x-sirius-internal-button size="sm" :variant="$number === $page ? 'primary' : 'ghost'" :aria-current="$number === $page ? 'page' : null" :aria-label="__('sirius::sirius-ui.table.page', ['number' => $number])" wire:click="goToPage({{ $number }})">{{ $number }}</x-sirius-internal-button>
+                            @endif
+                        @endforeach
+                        <x-sirius-internal-button size="sm" variant="ghost" :disabled="!$records->hasMorePages()" wire:click="goToPage({{ $page + 1 }})">{{ __('sirius::sirius-ui.table.next') }}</x-sirius-internal-button>
+                    </nav>
+                </div>
             </div>
         </div>
         <div class="sir-table-loading" data-table-loading @if(!$loading) hidden @endif role="status" tabindex="-1"><span class="sir-spinner" aria-hidden="true"></span>{{ __('sirius::sirius-ui.table.loading') }}</div>
