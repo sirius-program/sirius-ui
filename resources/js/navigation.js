@@ -92,14 +92,27 @@
         for (const [trigger, panel] of state.submenus) {
             if (!root.contains(trigger) || !root.contains(panel)) state.submenus.delete(trigger);
         }
+        for (const [trigger, declaration] of state.submenuDeclarations) {
+            if (!root.contains(trigger) || !root.contains(declaration.panel)) state.submenuDeclarations.delete(trigger);
+        }
         for (const trigger of root.querySelectorAll('[data-sir-submenu-trigger]')) {
             if (trigger.closest(rootSelector) !== root) continue;
             const panel = trigger.nextElementSibling;
             if (!panel?.matches('[data-sir-nav-list]')) continue;
+            if (!dropdown) {
+                const declared = trigger.dataset.initialOpen === 'true';
+                const previous = state.submenuDeclarations.get(trigger);
+                if (!previous || previous.panel !== panel || previous.open !== declared) {
+                    state.submenuDeclarations.set(trigger, { panel, open: declared });
+                    if (declared) state.submenus.set(trigger, panel);
+                    else state.submenus.delete(trigger);
+                }
+            }
             const parent = trigger.closest('[data-sir-nav-list]');
             const parentVisible = !parent.hidden && !parent.inert;
             if (!parentVisible || trigger.getAttribute('aria-disabled') === 'true') state.submenus.delete(trigger);
             const expanded = state.submenus.has(trigger);
+            if (!expanded && panel.contains(document.activeElement)) restoreFocus(trigger, parent);
             set(trigger, 'aria-expanded', String(expanded));
             visibility(panel, expanded);
             if (expanded && dropdown) position(panel, trigger, true);
@@ -107,6 +120,13 @@
         if (dropdown) {
             for (const item of root.querySelectorAll(itemSelector)) set(item, 'tabindex', '-1');
         }
+    }
+
+    function restoreFocus(trigger, parent) {
+        const target = trigger.disabled
+            ? items(parent).find(item => item !== trigger && item.getAttribute('aria-disabled') !== 'true')
+            : trigger;
+        target?.focus({ preventScroll: true });
     }
 
     function collapse(state, trigger, focus = false) {
@@ -117,8 +137,8 @@
         }
         state.submenus.delete(trigger);
         set(trigger, 'aria-expanded', 'false');
+        if (focus || panel.contains(document.activeElement)) restoreFocus(trigger, trigger.closest('[data-sir-nav-list]'));
         visibility(panel, false, state.dropdown);
-        if (focus) trigger.focus({ preventScroll: true });
     }
 
     function close(state, focus = false) {
@@ -167,7 +187,7 @@
             let state = roots.get(root);
             const declared = root.dataset.initialOpen === 'true';
             if (!state) {
-                state = { root, dropdown: root.hasAttribute('data-sir-dropdown'), open: false, declared, submenus: new Map(), search: '', searchAt: 0 };
+                state = { root, dropdown: root.hasAttribute('data-sir-dropdown'), open: false, declared, submenus: new Map(), submenuDeclarations: new Map(), search: '', searchAt: 0 };
                 roots.set(root, state);
                 sync(state);
                 if (declared && state.dropdown) open(state);
@@ -266,7 +286,8 @@
                 event.stopImmediatePropagation();
             } else if (item.hasAttribute('data-sir-submenu-trigger')) {
                 event.preventDefault();
-                expand(state, item, state.dropdown);
+                if (!state.dropdown && state.submenus.has(item)) collapse(state, item);
+                else expand(state, item, state.dropdown);
             } else if (event.key === ' ' || item.tagName === 'A') {
                 event.preventDefault();
                 item.click();

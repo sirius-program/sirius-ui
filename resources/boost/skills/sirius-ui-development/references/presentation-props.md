@@ -165,6 +165,13 @@ Native `href` and link attributes are forwarded and validated as described in pr
 | `label` | `null` |
 | `name` | required |
 
+## menu.category
+
+| Attribute | Declared default |
+| --- | --- |
+| `title` | `null` (required non-empty string) |
+| `icon` | `null` |
+
 ## menu.item
 
 | Attribute | Declared default |
@@ -177,6 +184,8 @@ Native `href` and link attributes are forwarded and validated as described in pr
 | `disabled` | `false` |
 | `active` | `false` |
 | `submenu` | `null` |
+| `open` | `false` |
+| `transition` | `false` |
 
 ## menu
 

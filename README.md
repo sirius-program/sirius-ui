@@ -154,6 +154,8 @@ See each component's dedicated documentation page for detailed API and usage exa
 | Overlays and notifications | Dialog, Alert, Slideover, Toast, Popover, Tooltip |
 | Livewire data components | Table, Calendar, Chart |
 
+Menu supports titled `menu.category` sections and `menu.item` submenus with optional icons. Put nested items in `<x-slot:submenu>` to create collapsible sections, with `open` for initial/bound state and `transition` for opening animations; closing hides the submenu immediately. Submenu items use compact triggers and indented content with a vertical border by default. Components own the list markup.
+
 Blade component names use kebab case, for example `<x-sirius::datetime-picker>`, `<x-sirius::file-upload>`, and `<x-sirius::button-group>`.
 
 Extend `Sirius\Ui\Livewire\Table` and implement `query()` and `columns()`; add `filters()` when needed. Extend `Sirius\Ui\Livewire\Calendar` and implement `events()`. Mount the concrete Chart component in a Livewire view:

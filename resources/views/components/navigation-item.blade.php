@@ -1,8 +1,14 @@
-@props(['id' => null, 'icon' => null, 'name' => null, 'link' => null, 'trailing' => null, 'disabled' => false, 'active' => false, 'submenu' => null, 'actionMenu' => false])
+@props(['id' => null, 'icon' => null, 'name' => null, 'link' => null, 'trailing' => null, 'disabled' => false, 'active' => false, 'submenu' => null, 'actionMenu' => false, 'open' => false, 'transition' => false])
 @php
     $hasSubmenu = $submenu instanceof \Illuminate\View\ComponentSlot && ! $submenu->isEmpty();
+    if (! is_bool($open) || ! is_bool($transition)) {
+        throw new \InvalidArgumentException('Menu item open and transition must be booleans.');
+    }
     if (! is_bool($disabled) || ! is_bool($active) || ($name !== null && ! is_string($name))) {
         throw new \InvalidArgumentException('Navigation name must be text and disabled and active must be booleans.');
+    }
+    if ($icon !== null && (! is_string($icon) || trim($icon) === '')) {
+        throw new \InvalidArgumentException('Navigation icon must be a non-empty icon name or null.');
     }
     if (($name === null || trim($name) === '') && $slot->isEmpty()) {
         throw new \InvalidArgumentException('Navigation items require a name or content.');
@@ -24,18 +30,24 @@
     }
     $as = $link !== null ? 'a' : 'button';
     $itemAttributes = $attributes->except(['id', 'href', 'type', 'role', 'disabled', 'aria-disabled', 'aria-current', 'aria-expanded', 'aria-controls', 'aria-haspopup', 'data-sir-nav-item', 'data-sir-submenu-trigger', 'data-active'])->class(['sir-nav-item']);
+    if ($hasSubmenu && ! $actionMenu) {
+        $itemAttributes = $itemAttributes->except(['data-initial-open', 'x-bind:open']);
+        if ($attributes->has('x-bind:open')) {
+            $itemAttributes = $itemAttributes->merge(['x-bind:data-initial-open' => $attributes->get('x-bind:open')]);
+        }
+    }
     if ($actionMenu || $disabled) {
         $itemAttributes = $itemAttributes->except(['tabindex'])->merge(['tabindex' => '-1']);
     }
 @endphp
 <li class="sir-nav-entry" @if ($actionMenu) role="none" @endif>
-    <{{ $as }} {{ $itemAttributes }} @if ($id !== null) id="{{ $id }}" @endif @if ($as === 'button') type="button" @if ($disabled && ! $actionMenu) disabled @endif @elseif (! $disabled) href="{{ $link }}" @endif @if ($actionMenu) role="menuitem" @elseif ($active && $link !== null) aria-current="page" @endif aria-disabled="{{ $disabled ? 'true' : 'false' }}" data-sir-nav-item data-active="{{ $active ? 'true' : 'false' }}" @if ($hasSubmenu) data-sir-submenu-trigger aria-expanded="false" aria-controls="{{ $id }}-submenu" @if ($actionMenu) aria-haspopup="menu" @endif @endif>
+    <{{ $as }} {{ $itemAttributes }} @if ($id !== null) id="{{ $id }}" @endif @if ($as === 'button') type="button" @if ($disabled && ! $actionMenu) disabled @endif @elseif (! $disabled) href="{{ $link }}" @endif @if ($actionMenu) role="menuitem" @elseif ($active && $link !== null) aria-current="page" @endif aria-disabled="{{ $disabled ? 'true' : 'false' }}" data-sir-nav-item data-active="{{ $active ? 'true' : 'false' }}" @if ($hasSubmenu) data-sir-submenu-trigger aria-expanded="{{ ! $actionMenu && $open && ! $disabled ? 'true' : 'false' }}" @if (! $actionMenu) data-initial-open="{{ $open && ! $disabled ? 'true' : 'false' }}" @endif aria-controls="{{ $id }}-submenu" @if ($actionMenu) aria-haspopup="menu" @endif @endif>
         @if ($icon !== null)<x-sirius-internal-icon :name="$icon" size="sm" />@endif
         <span class="sir-nav-name">@if ($slot->isNotEmpty()){{ $slot }}@else{{ $name }}@endif</span>
         @if ($trailing !== null)<span class="sir-nav-trailing">{{ $trailing }}</span>@endif
-        @if ($hasSubmenu)<x-sirius-internal-icon name="heroicon-o-chevron-right" size="sm" class="sir-nav-chevron" />@endif
+        @if ($hasSubmenu)<x-sirius-internal-icon :name="$actionMenu ? 'heroicon-o-chevron-right' : 'heroicon-o-chevron-down'" size="sm" class="sir-nav-chevron" />@endif
     </{{ $as }}>
     @if ($hasSubmenu)
-        <ul id="{{ $id }}-submenu" class="sir-nav-list sir-nav-submenu" data-sir-nav-list hidden @if ($actionMenu) role="menu" aria-labelledby="{{ $id }}" @endif>{{ $submenu }}</ul>
+        <ul id="{{ $id }}-submenu" class="sir-nav-list sir-nav-submenu" data-sir-nav-list @if ($actionMenu || ! $open || $disabled) hidden @endif @if (! $actionMenu) data-transition="{{ $transition ? 'true' : 'false' }}" @endif @if ($actionMenu) role="menu" aria-labelledby="{{ $id }}" @endif>{{ $submenu }}</ul>
     @endif
 </li>
