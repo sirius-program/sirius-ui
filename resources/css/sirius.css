@@ -531,6 +531,16 @@ dialog .sir-date-calendar.flatpickr-calendar, [data-sir-dropdown] .sir-date-cale
     .sir-tone--secondary { --sir-tone-bg: var(--sir-secondary-bg); --sir-tone-text: var(--sir-secondary-text); --sir-tone-border: var(--sir-secondary-border); }
     .sir-tone--ghost, .sir-tone--link { --sir-tone-bg: transparent; --sir-tone-text: var(--sir-color-text); --sir-tone-border: transparent; }
     .sir-tone--outline { --sir-tone-bg: transparent; --sir-tone-text: var(--sir-color-text); --sir-tone-border: var(--sir-color-border); }
+    .sir-code { font-family: var(--font-mono, ui-monospace, monospace); font-size: inherit; padding: .125em .375em; border: 1px solid var(--sir-tone-border); border-radius: .25em; color: var(--sir-tone-text); background: var(--sir-tone-bg); box-decoration-break: clone; overflow-wrap: anywhere; }
+    .sir-code--block { font: inherit; padding: 0; border: 0; border-radius: 0; color: inherit; background: transparent; white-space: inherit; overflow-wrap: inherit; box-decoration-break: slice; }
+    .sir-link { color: var(--sir-tone-text); font-size: inherit; text-decoration: underline; text-underline-offset: .2em; }
+    .sir-link:hover { text-decoration-thickness: 2px; }
+    .sir-link:focus-visible { outline: 2px solid var(--sir-focus-ring); outline-offset: 3px; border-radius: .125em; }
+    @media (forced-colors: active) {
+        .sir-code:not(.sir-code--block) { color: CanvasText; background: Canvas; border-color: CanvasText; }
+        .sir-link { color: LinkText; }
+        .sir-link:focus-visible { outline-color: Highlight; }
+    }
     .sir-button, .sir-badge, .sir-message { color: var(--sir-tone-text); background: var(--sir-tone-bg); border: 1px solid var(--sir-tone-border); border-radius: var(--sir-radius); }
     .sir-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; padding: .5rem .875rem; font-size: 1rem; line-height: 1.5; font-weight: 500; text-decoration: none; cursor: pointer; transition: background-color 150ms, opacity 150ms; }
     .sir-button.sir-size--sm { font-size: .875rem; padding: .375rem .625rem; }

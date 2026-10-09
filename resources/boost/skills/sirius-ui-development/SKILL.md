@@ -19,7 +19,7 @@ Work against the installed release. Start with composer show sirius/ui and the a
 | Browser form submission | Form; use a native wire:submit form for Livewire |
 | Focused or temporary content | Dialog/Alert, Slideover, Toast; Message for inline feedback |
 | Content layout | Card, Accordion, Tabs, Timeline, Separator; Skeleton for placeholders |
-| Navigation and small visuals | Menu, Dropdown, Breadcrumb, Popover, Tooltip, Button/Group, Badge, Avatar, Icon |
+| Navigation and small visuals | Link, Code, Menu, Dropdown, Breadcrumb, Popover, Tooltip, Button/Group, Badge, Avatar, Icon |
 | Data-driven interfaces | Extend Livewire Table/Calendar; mount the concrete Livewire Chart in a parent |
 
 ## Choose the reference

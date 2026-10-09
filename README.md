@@ -148,7 +148,7 @@ See each component's dedicated documentation page for detailed API and usage exa
 | Group | Components |
 | --- | --- |
 | Forms and fields | Form, Field, Label, Input/password, Textarea, Checkbox, Radio, Switch, Currency, Datetime Picker, Phone, Select, File Upload, Richtext, Slider |
-| Presentation | Icon, Avatar, Badge, Button, Button Group, Message, Separator, Skeleton |
+| Presentation | Code, Link, Icon, Avatar, Badge, Button, Button Group, Message, Separator, Skeleton |
 | Layout | Card, Accordion, Tabs, Timeline |
 | Navigation | Breadcrumb, Menu, Dropdown |
 | Overlays and notifications | Dialog, Alert, Slideover, Toast, Popover, Tooltip |

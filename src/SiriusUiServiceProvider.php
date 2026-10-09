@@ -43,6 +43,8 @@ final class SiriusUiServiceProvider extends ServiceProvider
         Blade::component('sirius::components.navigation-item', 'sirius-internal-navigation-item');
         Blade::component('sirius::components.floating', 'sirius-internal-floating');
         Blade::component('sirius::components.button', 'sirius-internal-button');
+        Blade::component('sirius::components.code', 'sirius-internal-code');
+        Blade::component('sirius::components.link', 'sirius-internal-link');
         Blade::component('sirius::components.dropdown', 'sirius-internal-dropdown');
         Blade::component('sirius::components.input', 'sirius-internal-input');
         Blade::component('sirius::components.checkbox', 'sirius-internal-checkbox');

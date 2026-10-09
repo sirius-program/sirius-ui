@@ -4,6 +4,10 @@ Read presentation-props.md for all declared props and defaults. Use colon bindin
 
 ## Visual components
 
+Code renders code with six tones: primary/info/secondary/success/danger/warning, default info. Use block inside your own pre to inherit its formatting without inline padding/tone styling. text supplies escaped source and preserves leading/trailing whitespace; it overrides the slot. The slot accepts authored token markup. Code provides no highlighting or Copy engine.
+
+Link renders an underlined native anchor with the same six tones, default primary, and visible keyboard focus. Pass href and native target/rel/download attributes; class, data/ARIA, Alpine, wire:navigate, and wire:click are forwarded. Static href rejects control characters and non-HTTP(S)/mailto/tel schemes; relative paths/fragments are supported. Dynamic x-bind:href validation is application-owned. Both components inherit surrounding text size and work without JavaScript.
+
 Badge and Message use primary (blue), info (neutral), secondary (indigo), success, danger, warning, ghost and outline. Button also supports link. Button uses as="a" with href for links; defaults to as="button". Provide type="submit" explicitly in forms. loading disables interaction; application authorization remains separate. Icon names reference the installed Blade Icons registry.
 
 Message uses dismissible, reset-key can restore dismissed content after a deliberate state change. Icon and message text align vertically. Default slot is message content. Avatar uses src/alt or fallback, size sm/md/lg/xl and variant circle|rounded. Button Group has a label for the group and contains Buttons; no action engine.

@@ -92,6 +92,22 @@ Defaults are declared PHP values. See presentation.md and overlays.md for resolv
 | `body-class` | `''` |
 | `footer-class` | `''` |
 
+## code
+
+| Attribute | Declared default |
+| --- | --- |
+| `variant` | `'info'` |
+| `block` | `false` |
+| `text` | `null` |
+
+## link
+
+| Attribute | Declared default |
+| --- | --- |
+| `variant` | `'primary'` |
+
+Native `href` and link attributes are forwarded and validated as described in presentation.md.
+
 ## dialog
 
 | Attribute | Declared default |
