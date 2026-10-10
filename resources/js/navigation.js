@@ -30,10 +30,10 @@
             clearTimeout(closing.get(panel));
             closing.delete(panel);
             delete panel.dataset.closing;
-            panel.inert = false;
+            if (panel.inert) panel.inert = false;
             if (panel.hidden) panel.hidden = false;
         } else {
-            panel.inert = true;
+            if (!panel.inert) panel.inert = true;
             if (closing.has(panel)) return;
             if (animate && !panel.hidden && !reducedMotion()) {
                 panel.dataset.closing = 'true';
@@ -337,7 +337,7 @@
     });
     const start = () => {
         scan();
-        observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-initial-open', 'data-align', 'aria-expanded', 'aria-disabled', 'hidden', 'disabled'] });
+        observer.observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-initial-open', 'data-align', 'aria-expanded', 'aria-disabled', 'hidden', 'inert', 'disabled'] });
     };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true }); else start();
 })();

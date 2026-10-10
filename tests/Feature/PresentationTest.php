@@ -36,8 +36,38 @@ it('renders decorative and named icons with escaped accessible labels', function
     expect(Blade::render('<x-sirius::icon name="heroicon-o-check" />'))->toContain('<svg', 'aria-hidden="true"', 'focusable="false"');
     $html = Blade::render('<x-sirius::icon name="heroicon-o-check" :label="$label" size="lg" class="custom" />', ['label' => '"><script>bad</script>']);
     expect($html)->toContain('role="img"', 'aria-label="&quot;&gt;&lt;script&gt;bad&lt;/script&gt;"', 'sir-icon--lg', 'custom');
-    expect($html)->not->toContain('aria-hidden', '<script>');
+    expect($html)->not->toContain('aria-hidden');
+    expect($html)->not->toContain('<script>');
     expect(Blade::render('<x-sirius::button icon="heroicon-o-check" aria-label="Approve" />'))->toContain('aria-label="Approve"', '<svg');
+});
+
+it('owns icon accessibility attributes without inheriting duplicate SVG declarations', function (string $family): void {
+    foreach ([null, 'Payment verified'] as $label) {
+        $html = Blade::render('<x-sirius::icon :name="$name" :label="$label" aria-hidden="true" aria-labelledby="other" role="button" focusable="true" data-test="icon" />', ['name' => 'heroicon-' . $family . '-check-circle', 'label' => $label]);
+        if (preg_match('/<svg\b[^>]*>/', $html, $opening) !== 1) {
+            throw new RuntimeException('Icon output must contain an SVG root.');
+        }
+        expect(substr_count($opening[0], 'focusable='))->toBe(1);
+        expect($opening[0])->toContain('focusable="false"', 'data-test="icon"');
+        expect($opening[0])->not->toContain('aria-labelledby');
+        if ($label === null) {
+            expect(substr_count($opening[0], 'aria-hidden='))->toBe(1);
+            expect($opening[0])->toContain('aria-hidden="true"');
+            expect($opening[0])->not->toContain('aria-label=');
+        } else {
+            expect($opening[0])->not->toContain('aria-hidden');
+            expect(substr_count($opening[0], 'role='))->toBe(1);
+            expect(substr_count($opening[0], 'aria-label='))->toBe(1);
+            expect($opening[0])->toContain('role="img"', 'aria-label="Payment verified"');
+        }
+    }
+})->with(['o', 's', 'm', 'c']);
+
+it('preserves unrelated SVG attribute values that mention accessibility attributes', function (): void {
+    $note = ' aria-hidden=true role=button focusable=true aria-label=other ';
+    $html = Blade::render('<x-sirius::icon name="heroicon-o-check" label="Verified" :data-note="$note" />', ['note' => $note]);
+
+    expect($html)->toContain('data-note="' . $note . '"');
 });
 
 it('groups ordinary buttons without adding selection semantics', function (): void {
