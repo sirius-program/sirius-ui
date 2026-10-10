@@ -28,7 +28,7 @@ abstract class TestCase extends Orchestra
     {
         if (self::$runtimePath === null) {
             // Isolate concurrent workers and separate runs, including direct Pest invocations.
-            self::$runtimePath = dirname(__DIR__) . '/.phpunit.cache/runtime/' . getmypid() . '-' . bin2hex(random_bytes(8));
+            self::$runtimePath = __DIR__ . '/.phpunit.cache/runtime/' . getmypid() . '-' . bin2hex(random_bytes(8));
             $files = new Filesystem;
             $files->ensureDirectoryExists(self::$runtimePath . '/bootstrap/cache');
             $files->ensureDirectoryExists(self::$runtimePath . '/views');
