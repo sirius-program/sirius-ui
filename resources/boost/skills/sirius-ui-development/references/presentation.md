@@ -10,6 +10,8 @@ Link renders an underlined native anchor with the same six tones, default primar
 
 Badge and Message use primary (blue), info (neutral), secondary (indigo), success, danger, warning, ghost and outline. Button also supports link. Button uses as="a" with href for links; defaults to as="button". Provide type="submit" explicitly in forms. loading disables interaction; application authorization remains separate. Icon names reference the installed Blade Icons registry.
 
+Only Heroicons ships as an icon pack: heroicon-o-* and heroicon-s-* use 24px source designs; heroicon-m-* uses 20px and heroicon-c-* uses 16px. Sirius Icon size controls display dimensions independently (sm=16px, md=20px, lg=24px). Install other Blade Icons packs in the consuming application and use their registered prefix, or define an SVG set in config/blade-icons.php. Before set changes run icons:clear; after changes run view:clear and rebuild icons:cache for deployment. Do not assume every catalog pack is installed.
+
 Message uses dismissible, reset-key can restore dismissed content after a deliberate state change. Icon and message text align vertically. Default slot is message content. Avatar uses src/alt or fallback, size sm/md/lg/xl and variant circle|rounded. Button Group has a label for the group and contains Buttons; no action engine.
 
 Skeleton uses width/height CSS lengths and shape; Separator uses orientation horizontal|vertical and decorative controls accessible semantics.
