@@ -1501,6 +1501,10 @@ dialog .sir-date-calendar.flatpickr-calendar, [data-sir-dropdown] .sir-date-cale
     scrollbar-width: none;
 }
 
+[data-select-ui] .ts-wrapper.multi.has-items .ts-control {
+    padding-block: max(0px, calc(var(--sir-control-padding-y) - 3px));
+}
+
 [data-select-ui] .ts-wrapper.multi .ts-control > .item {
     flex: 0 0 auto;
     white-space: nowrap;
