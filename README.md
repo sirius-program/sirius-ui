@@ -193,6 +193,24 @@ UI strings are grouped by component in `lang/vendor/sirius/{locale}/sirius-ui.ph
 
 Add the `dark` class to your layout's root element for the dark theme. Add `sir-scrollbar` to `html` or a scroll container for the package's scrollbar styling. Load CSS overrides after Sirius CSS. Published views should be reviewed when upgrading.
 
+Customize font sizes with `--sir-font-size-xs` (0.75rem), `--sir-font-size-sm` (0.875rem), `--sir-font-size-base` (1rem), `--sir-font-size-lg` (1.125rem), and `--sir-font-size-xl` (1.25rem). Set overrides on `:root` or a container; labels and native controls inherit their field size, while Code and Link inherit the surrounding text size. Richtext also exposes `--sir-richtext-heading-font-size`, `--sir-richtext-badge-font-size`, and `--sir-richtext-large-button-font-size`. Avatar text follows its dimensions and the `--sir-avatar-font-scale` ratio (0.35).
+
+```css
+:root {
+    --sir-font-size-base: 1.0625rem;
+    --sir-font-size-sm: 0.9375rem;
+}
+```
+
+Customize font families with `--sir-font-family` for component text and `--sir-font-family-mono` for inline Code and Richtext code blocks. Set them on `:root` or a container. Their default `initial` leaves the application's existing fonts in effect, including Tailwind font utilities. Code's `block` mode still inherits its parent's font. `--sir-richtext-shortcut-font-family` overrides Richtext keyboard hints independently; otherwise they use the main token or their original system font stack. These tokens select font families; your application loads any custom font files.
+
+```css
+:root {
+    --sir-font-family: 'Inter', sans-serif;
+    --sir-font-family-mono: 'JetBrains Mono', monospace;
+}
+```
+
 ## AI Assistance
 
 The bundled `sirius-ui-development` skill gives coding agents package-specific guidance and offline API references. It is a development aid, not an AI service running inside your application.
