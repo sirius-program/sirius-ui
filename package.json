@@ -19,7 +19,7 @@
         "chart.js": "4.5.1",
         "chartjs-adapter-date-fns": "3.0.0",
         "date-fns": "4.4.0",
-        "esbuild": "0.25.12",
+        "esbuild": "0.28.2",
         "filepond": "4.32.12",
         "filepond-plugin-file-poster": "2.5.2",
         "filepond-plugin-file-validate-size": "2.2.8",
