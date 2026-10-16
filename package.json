@@ -15,7 +15,7 @@
         "@tiptap/extension-image": "3.31.3",
         "@tiptap/pm": "3.31.3",
         "@tiptap/react": "3.31.3",
-        "@tiptap/starter-kit": "3.31.3",
+        "@tiptap/starter-kit": "3.31.4",
         "chart.js": "4.5.1",
         "chartjs-adapter-date-fns": "3.0.0",
         "date-fns": "4.4.0",
